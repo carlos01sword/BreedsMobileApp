@@ -3,7 +3,8 @@ import SwiftUI
 
 @Reducer
 struct BreedListFeature {
-
+    
+    @ObservableState
     struct State: Equatable {
         var breeds: IdentifiedArrayOf<Breed> = []
         var isLoading: Bool = false
@@ -51,39 +52,37 @@ struct BreedListFeature {
 }
 
 struct BreedListView: View {
-    let store: StoreOf<BreedListFeature>
-
+    @Bindable var store: StoreOf<BreedListFeature>
+    
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
-            NavigationStack {
-                ZStack {
-                    if viewStore.isLoading {
-                        ProgressView()
-                    }
-                    if let errorMessage = viewStore.errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .padding()
-                    }
-                    ScrollView {
-                        ForEach(viewStore.breeds) { breed in
-                            BreedRowView(breed: breed)
-                        }
-                        .contentShape(Rectangle())
-                        .padding(.horizontal)
-                        .padding(.vertical, ConstantsUI.defaultVerticalSpacing)
-                    }
+        NavigationStack {
+            ZStack {
+                if store.isLoading {
+                    ProgressView()
                 }
-                .navigationTitle("🐈 Cat Breeds")
-                .onAppear {
-                    viewStore.send(.fetchBreeds)
+                if let errorMessage = store.errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding()
                 }
+                ScrollView {
+                    ForEach(store.breeds) { breed in
+                        BreedRowView(breed: breed)
+                    }
+                    .contentShape(Rectangle())
+                    .padding(.horizontal)
+                    .padding(.vertical, ConstantsUI.defaultVerticalSpacing)
+                }
+            }
+            .navigationTitle("🐈 Cat Breeds")
+            .onAppear {
+                store.send(.fetchBreeds)
             }
         }
     }
 }
 
-#if DEBUG
+#if DEBUGb
     #Preview {
         BreedListView(
             store: Store(initialState: BreedListFeature.State()) {
