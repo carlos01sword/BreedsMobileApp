@@ -3,7 +3,8 @@ import Foundation
 public enum Environment {
     enum Keys{
         static let apiKey = "API_KEY"
-        static let baseUrl = "BASE_URL"
+        static let urlHost = "URL_HOST"
+        static let urlPath = "URL_PATH"
     }
     
     private static let infoDictionary: [String: Any] = {
@@ -13,11 +14,18 @@ public enum Environment {
         return dict
     }()
     
-    static let baseURL: String = {
-        guard let baseUrlString = Environment.infoDictionary[Keys.baseUrl] as? String else {
-            fatalError("Base URL not found in plist")
+    static let urlHost: String = {
+        guard let urlHostString = Environment.infoDictionary[Keys.urlHost] as? String else {
+            fatalError("URL Host not found in plist")
         }
-        return baseUrlString
+        return urlHostString
+    }()
+    
+    static let urlPath: String = {
+        guard let urlPathString = Environment.infoDictionary[Keys.urlPath] as? String else {
+            fatalError("URL Path not found in plist")
+        }
+        return urlPathString
     }()
     
     static let apiKey: String = {

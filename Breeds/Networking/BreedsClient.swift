@@ -8,7 +8,7 @@ struct BreedsClient {
 extension BreedsClient: DependencyKey {
     static let liveValue = BreedsClient {
         do {
-            let data = try await NetworkClient.fetch(from: "/breeds")
+            let data = try await NetworkClient.fetch(.breeds)
             do {
                 return try JSONDecoder().decode([Breed].self, from: data)
             } catch {

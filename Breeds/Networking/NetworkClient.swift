@@ -16,13 +16,28 @@ enum NetworkError: Error, CustomStringConvertible {
     }
 }
 
+struct Endpoint {
+    let path: String
+    var fetchBreedsUrl: URL? {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = Environment.urlHost
+        components.path = "/v1" + path
+        return components.url
+    }
+}
+
+extension Endpoint {
+    static var breeds: Endpoint {
+        Endpoint(path: Environment.urlPath)
+    }
+}
+
 struct NetworkClient {
-    static func fetch(from path: String) async throws -> Data {
-        let base = Environment.baseURL.replacingOccurrences(of: "\\/", with: "/")
-        guard let url = URL(string: "\(base)/v1\(path)") else {
+    static func fetch(_ endpoint: Endpoint) async throws -> Data {
+        guard let url = endpoint.fetchBreedsUrl else {
             throw NetworkError.invalidURL
         }
-        
         var request = URLRequest(url: url)
         request.setValue(Environment.apiKey, forHTTPHeaderField: "x-api-key")
 
