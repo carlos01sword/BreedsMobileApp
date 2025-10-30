@@ -1,0 +1,3 @@
+# Ignore plist and xcconfig with secrets
+/Breeds/Resources/Configurations/Development.xcconfig
+/Breeds/Resources/Configurations/Info.plist
