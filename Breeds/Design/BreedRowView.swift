@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct breedRowView: View {
+struct BreedRowView: View {
     
     let onFavoriteTapped: Bool = true
     var breed: Breed
@@ -38,7 +38,7 @@ private extension CGFloat {
 
 #if DEBUG
 #Preview {
-    breedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", life_span: "", reference_image_id: "", isFavorite: false))
+    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", life_span: "", reference_image_id: "", isFavorite: false))
         .padding()
 }
 #endif

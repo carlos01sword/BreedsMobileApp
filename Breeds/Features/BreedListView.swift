@@ -67,7 +67,7 @@ struct BreedListView: View {
                     }
                     ScrollView {
                         ForEach(viewStore.breeds) { breed in
-                            breedRowView(breed: breed)
+                            BreedRowView(breed: breed)
                         }
                         .contentShape(Rectangle())
                         .padding(.horizontal)
