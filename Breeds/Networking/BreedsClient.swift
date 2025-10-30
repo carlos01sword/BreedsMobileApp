@@ -15,8 +15,8 @@ extension BreedsClient: DependencyKey {
                 throw NetworkError.decoding(error)
             }
         } catch {
-            if let netErr = error as? NetworkError {
-                throw netErr
+            if let networkError = error as? NetworkError {
+                throw networkError
             } else {
                 throw NetworkError.transport(error)
             }
