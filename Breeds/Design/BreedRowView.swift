@@ -2,8 +2,9 @@ import SwiftUI
 
 struct BreedRowView: View {
     
-    let onFavoriteTapped: Bool = true
+    
     var breed: Breed
+    var onFavoriteTapped: () -> Void
     
     var body: some View {
         HStack(spacing: .rowSpacing) {
@@ -19,8 +20,10 @@ struct BreedRowView: View {
             
             Spacer()
             // TODO: Implement favorites logic
-            Image(systemName: /*breed.isFavorite ? */ "star.fill" /*: "star"*/)
-                .foregroundColor(.yellow)
+            Button(action: onFavoriteTapped){
+                Image(systemName: breed.isFavorite ? "star.fill" : "star")
+                    .foregroundColor(.yellow)
+            }
         }
         .padding()
         .background(
@@ -38,7 +41,8 @@ private extension CGFloat {
 
 #if DEBUG
 #Preview {
-    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: "", isFavorite: false))
+    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: "", isFavorite: false),
+                 onFavoriteTapped: {})
         .padding()
 }
 #endif

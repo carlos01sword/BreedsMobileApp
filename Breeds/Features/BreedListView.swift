@@ -14,6 +14,7 @@ struct BreedListFeature {
     enum Action: Equatable {
         case fetchBreeds
         case breedsResponse(TaskResult<[Breed]>)
+        case breedFavoriteToggled(id: Breed.ID)
     }
 
     @Dependency(\.breedsClient) var breedsClient
@@ -46,6 +47,10 @@ struct BreedListFeature {
                     state.errorMessage = error.localizedDescription
                 }
                 return .none
+                
+            case .breedFavoriteToggled(let id):
+                state.breeds[id: id]?.isFavorite.toggle()
+                return .none
             }
         }
     }
@@ -67,7 +72,12 @@ struct BreedListView: View {
                 }
                 ScrollView {
                     ForEach(store.breeds) { breed in
-                        BreedRowView(breed: breed)
+                        BreedRowView(
+                            breed: breed,
+                            onFavoriteTapped: {
+                                store.send(.breedFavoriteToggled(id: breed.id))
+                            }
+                        )
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal)
