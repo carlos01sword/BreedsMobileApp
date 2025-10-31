@@ -38,7 +38,7 @@ private extension CGFloat {
 
 #if DEBUG
 #Preview {
-    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", life_span: "", reference_image_id: "", isFavorite: false))
+    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: "", isFavorite: false))
         .padding()
 }
 #endif

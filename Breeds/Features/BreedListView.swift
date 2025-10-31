@@ -82,7 +82,7 @@ struct BreedListView: View {
     }
 }
 
-#if DEBUGb
+#if DEBUG
     #Preview {
         BreedListView(
             store: Store(initialState: BreedListFeature.State()) {
