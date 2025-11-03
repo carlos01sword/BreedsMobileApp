@@ -7,10 +7,15 @@ struct BreedsApp: App {
         initialState: BreedListFeature.State(),
         reducer: { BreedListFeature() }
     )
+    
+    private let favoriteStore = Store(
+        initialState: FavoriteFeature.State(),
+        reducer: { FavoriteFeature() }
+    )
 
     var body: some Scene {
         WindowGroup {
-            BreedTabView(store: store)
+            BreedTabView(store: store, favoriteStore: favoriteStore)
         }
     }
 }

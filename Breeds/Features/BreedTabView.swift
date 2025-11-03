@@ -3,6 +3,8 @@ import SwiftUI
 
 struct BreedTabView: View {
     var store: StoreOf<BreedListFeature>
+    var favoriteStore: StoreOf<FavoriteFeature>
+        
 
     var body: some View {
         TabView {
@@ -11,9 +13,7 @@ struct BreedTabView: View {
                     Label("All", systemImage: "pawprint.fill")
                 }
 
-            FavoriteView(
-                store: store.scope(state: \.favoriteState, action: \.favoriteAction)
-            )
+            FavoriteView(store: favoriteStore)
             .tabItem {
                 Label("Favorites", systemImage: "star.fill")
             }
@@ -27,6 +27,10 @@ struct BreedTabView: View {
             store: Store(
                 initialState: BreedListFeature.State(),
                 reducer: { BreedListFeature() }
+            ),
+            favoriteStore: Store(
+                initialState: FavoriteFeature.State(),
+                reducer: { FavoriteFeature() }
             )
         )
     }
