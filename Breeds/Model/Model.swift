@@ -1,6 +1,8 @@
-import Foundation
 
-struct Breed: Equatable, Identifiable, Codable {
+import Foundation
+import ComposableArchitecture
+
+nonisolated struct Breed: Equatable, Identifiable, Codable {
     let id: String
     let name: String
     let origin: String
@@ -9,4 +11,12 @@ struct Breed: Equatable, Identifiable, Codable {
     let lifeSpan: String
     let referenceImageID: String?
     var isFavorite: Bool
+}
+
+extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Breed>>.Default {
+  static var breeds: Self {
+    Self[.fileStorage(.documentsDirectory.appending(component: "breeds.json")),
+      default: []
+    ]
+  }
 }

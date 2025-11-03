@@ -6,7 +6,9 @@ struct BreedListFeature {
     
     @ObservableState
     struct State: Equatable {
-        @Shared(.inMemory("all-breeds")) var breeds: IdentifiedArrayOf<Breed> = []
+        @ObservationStateIgnored
+        @Shared(.breeds) var breeds
+        
         var isLoading: Bool = false
         var errorMessage: String?
     }

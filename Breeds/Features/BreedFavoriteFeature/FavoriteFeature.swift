@@ -6,7 +6,8 @@ struct FavoriteFeature {
 
     @ObservableState
     struct State: Equatable {
-        @Shared(.inMemory("all-breeds")) var breeds: IdentifiedArrayOf<Breed> = []
+        @ObservationStateIgnored
+        @Shared(.breeds) var breeds
         
         var favorites: IdentifiedArrayOf<Breed> {
             breeds.filter (\.isFavorite)
