@@ -1,4 +1,4 @@
-struct BreedDTO: Codable {
+struct BreedDTO: Decodable {
     let id: String
     let name: String
     let description: String
