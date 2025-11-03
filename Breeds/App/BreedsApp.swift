@@ -10,7 +10,7 @@ struct BreedsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            BreedListView(store: store)
+            BreedTabView(store: store)
         }
     }
 }

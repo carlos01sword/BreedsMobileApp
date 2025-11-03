@@ -31,7 +31,9 @@ struct BreedListView: View {
             }
             .navigationTitle("🐈 Cat Breeds")
             .onAppear {
-                store.send(.fetchBreeds)
+                if store.breeds.isEmpty {
+                    store.send(.fetchBreeds)
+                }
             }
         }
     }

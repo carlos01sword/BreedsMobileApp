@@ -9,17 +9,28 @@ struct BreedListFeature {
         var breeds: IdentifiedArrayOf<Breed> = []
         var isLoading: Bool = false
         var errorMessage: String?
+        
+        var favoriteState: FavoriteFeature.State {
+            get { FavoriteFeature.State(allBreeds: breeds) }
+            set { breeds = newValue.allBreeds }
+        }
     }
 
     enum Action: Equatable {
         case fetchBreeds
         case breedsResponse(TaskResult<[Breed]>)
         case breedFavoriteToggled(id: Breed.ID)
+        case favoriteAction(FavoriteFeature.Action)
     }
 
     @Dependency(\.breedsClient) var breedsClient
 
     var body: some Reducer<State, Action> {
+        
+        Scope(state: \.favoriteState, action: \.favoriteAction){
+            FavoriteFeature()
+        }
+        
         Reduce { state, action in
             switch action {
             case .fetchBreeds:
@@ -50,6 +61,9 @@ struct BreedListFeature {
                 
             case .breedFavoriteToggled(let id):
                 state.breeds[id: id]?.isFavorite.toggle()
+                return .none
+                
+            case .favoriteAction:
                 return .none
             }
         }
