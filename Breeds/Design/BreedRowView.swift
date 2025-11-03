@@ -41,8 +41,9 @@ private extension CGFloat {
 
 #if DEBUG
 #Preview {
-    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: "", isFavorite: false),
-                 onFavoriteTapped: {})
+    @Previewable @State var isFavorite: Bool = false
+    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: "", isFavorite: isFavorite),
+                 onFavoriteTapped: {isFavorite.toggle()})
         .padding()
 }
 #endif
