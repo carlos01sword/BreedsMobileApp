@@ -19,7 +19,6 @@ struct BreedRowView: View {
                 .foregroundColor(.primary)
             
             Spacer()
-            // TODO: Implement favorites logic
             Button(action: onFavoriteTapped){
                 Image(systemName: breed.isFavorite ? "star.fill" : "star")
                     .foregroundColor(.yellow)
