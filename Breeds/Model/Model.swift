@@ -12,7 +12,9 @@ struct Breed: Equatable, Identifiable, Codable {
 }
 
 extension Breed {
-    nonisolated init(dto: BreedDTO) {
+extension BreedDTO {
+    var breed: Breed {
+        .init(
         self.id = dto.id
         self.name = dto.name
         self.origin = dto.origin
@@ -21,5 +23,7 @@ extension Breed {
         self.lifeSpan = dto.lifeSpan
         self.referenceImageID = dto.referenceImageID
         self.isFavorite = false
+        )
     }
+}
 }
