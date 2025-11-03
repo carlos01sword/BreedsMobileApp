@@ -7,3 +7,18 @@ struct BreedDTO: Codable {
     let lifeSpan: String
     let referenceImageID: String?
 }
+
+extension BreedDTO {
+    nonisolated var breed: Breed {
+        .init(
+            id: self.id,
+            name: self.name,
+            origin: self.origin,
+            temperament: self.temperament,
+            description: self.description,
+            lifeSpan: self.lifeSpan,
+            referenceImageID: self.referenceImageID,
+            isFavorite: false
+        )
+    }
+}
