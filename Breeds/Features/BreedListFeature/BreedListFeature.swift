@@ -1,12 +1,12 @@
-import ComposableArchitecture
 import SwiftUI
+import ComposableArchitecture
 
 @Reducer
 struct BreedListFeature {
     
     @ObservableState
     struct State: Equatable {
-        var breeds: IdentifiedArrayOf<Breed> = []
+        @Shared(.inMemory("all-breeds")) var breeds: IdentifiedArrayOf<Breed> = []
         var isLoading: Bool = false
         var errorMessage: String?
     }
@@ -14,6 +14,7 @@ struct BreedListFeature {
     enum Action: Equatable {
         case fetchBreeds
         case breedsResponse(TaskResult<[Breed]>)
+        case breedFavoriteToggled(id: Breed.ID)
     }
 
     @Dependency(\.breedsClient) var breedsClient
@@ -31,11 +32,11 @@ struct BreedListFeature {
                     } catch {
                         await send(.breedsResponse(.failure(error)))
                     }
-
                 }
+                
             case .breedsResponse(.success(let breeds)):
                 state.isLoading = false
-                state.breeds = IdentifiedArray(uniqueElements: breeds)
+                state.$breeds.withLock { $0 = IdentifiedArray(uniqueElements: breeds) }
                 return .none
                 
             case .breedsResponse(.failure(let error)):
@@ -46,48 +47,11 @@ struct BreedListFeature {
                     state.errorMessage = error.localizedDescription
                 }
                 return .none
+                
+            case .breedFavoriteToggled(let id):
+                state.$breeds.withLock { $0[id: id]?.isFavorite.toggle() }
+                return .none
             }
         }
     }
 }
-
-struct BreedListView: View {
-    @Bindable var store: StoreOf<BreedListFeature>
-    
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                if store.isLoading {
-                    ProgressView()
-                }
-                if let errorMessage = store.errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .padding()
-                }
-                ScrollView {
-                    ForEach(store.breeds) { breed in
-                        BreedRowView(breed: breed)
-                    }
-                    .contentShape(Rectangle())
-                    .padding(.horizontal)
-                    .padding(.vertical, ConstantsUI.defaultVerticalSpacing)
-                }
-            }
-            .navigationTitle("🐈 Cat Breeds")
-            .onAppear {
-                store.send(.fetchBreeds)
-            }
-        }
-    }
-}
-
-#if DEBUG
-    #Preview {
-        BreedListView(
-            store: Store(initialState: BreedListFeature.State()) {
-                BreedListFeature()
-            }
-        )
-    }
-#endif

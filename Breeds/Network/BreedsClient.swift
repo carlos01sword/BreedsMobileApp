@@ -26,6 +26,11 @@ extension BreedsClient: DependencyKey {
     }
 }
 
+extension BreedsClient: TestDependencyKey {
+    static let testValue = Self (
+        fetchBreeds: { [] }
+    )
+}
 
 extension DependencyValues {
     var breedsClient: BreedsClient {

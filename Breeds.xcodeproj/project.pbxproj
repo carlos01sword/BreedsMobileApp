@@ -10,7 +10,18 @@
 		0AFFDF1F2EB276BB00996003 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 0AFFDF1E2EB276BB00996003 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		0ADA473F2EB8F23C000C71AA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0AFFDF052EB2763C00996003 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0AFFDF0C2EB2763D00996003;
+			remoteInfo = Breeds;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		0ADA473B2EB8F23C000C71AA /* BreedsAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreedsAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AFFDF0D2EB2763D00996003 /* Breeds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breeds.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -25,6 +36,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		0ADA473C2EB8F23C000C71AA /* BreedsAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BreedsAppTests;
+			sourceTree = "<group>";
+		};
 		0AFFDF0F2EB2763D00996003 /* Breeds */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -36,6 +52,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0ADA47382EB8F23C000C71AA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0AFFDF0A2EB2763D00996003 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				0AFFDF0F2EB2763D00996003 /* Breeds */,
+				0ADA473C2EB8F23C000C71AA /* BreedsAppTests */,
 				0AFFDF0E2EB2763D00996003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				0AFFDF0D2EB2763D00996003 /* Breeds.app */,
+				0ADA473B2EB8F23C000C71AA /* BreedsAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,6 +91,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0ADA473A2EB8F23C000C71AA /* BreedsAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0ADA47432EB8F23C000C71AA /* Build configuration list for PBXNativeTarget "BreedsAppTests" */;
+			buildPhases = (
+				0ADA47372EB8F23C000C71AA /* Sources */,
+				0ADA47382EB8F23C000C71AA /* Frameworks */,
+				0ADA47392EB8F23C000C71AA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0ADA47402EB8F23C000C71AA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0ADA473C2EB8F23C000C71AA /* BreedsAppTests */,
+			);
+			name = BreedsAppTests;
+			packageProductDependencies = (
+			);
+			productName = BreedsAppTests;
+			productReference = 0ADA473B2EB8F23C000C71AA /* BreedsAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		0AFFDF0C2EB2763D00996003 /* Breeds */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0AFFDF182EB2763E00996003 /* Build configuration list for PBXNativeTarget "Breeds" */;
@@ -99,6 +147,10 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					0ADA473A2EB8F23C000C71AA = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 0AFFDF0C2EB2763D00996003;
+					};
 					0AFFDF0C2EB2763D00996003 = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
@@ -122,11 +174,19 @@
 			projectRoot = "";
 			targets = (
 				0AFFDF0C2EB2763D00996003 /* Breeds */,
+				0ADA473A2EB8F23C000C71AA /* BreedsAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0ADA47392EB8F23C000C71AA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0AFFDF0B2EB2763D00996003 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,6 +197,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0ADA47372EB8F23C000C71AA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0AFFDF092EB2763D00996003 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,7 +213,57 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		0ADA47402EB8F23C000C71AA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0AFFDF0C2EB2763D00996003 /* Breeds */;
+			targetProxy = 0ADA473F2EB8F23C000C71AA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		0ADA47412EB8F23C000C71AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UX34R5TT8M;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.BreedsAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Breeds.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Breeds";
+			};
+			name = Debug;
+		};
+		0ADA47422EB8F23C000C71AA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UX34R5TT8M;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.BreedsAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Breeds.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Breeds";
+			};
+			name = Release;
+		};
 		0AFFDF162EB2763E00996003 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 0AFFDF0F2EB2763D00996003 /* Breeds */;
@@ -345,6 +462,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0ADA47432EB8F23C000C71AA /* Build configuration list for PBXNativeTarget "BreedsAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0ADA47412EB8F23C000C71AA /* Debug */,
+				0ADA47422EB8F23C000C71AA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0AFFDF082EB2763C00996003 /* Build configuration list for PBXProject "Breeds" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
