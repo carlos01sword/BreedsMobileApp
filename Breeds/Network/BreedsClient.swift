@@ -10,7 +10,9 @@ extension BreedsClient: DependencyKey {
         do {
             let data = try await NetworkClient.fetch(.breeds)
             do {
-                return try JSONDecoder().decode([Breed].self, from: data)
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                return (try decoder.decode([BreedDTO].self, from: data)).map(\.breed)
             } catch {
                 throw NetworkError.decoding(error)
             }
