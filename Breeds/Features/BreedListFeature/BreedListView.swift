@@ -40,7 +40,7 @@ struct BreedListView: View {
 }
 
 #if DEBUG
-    #Preview {
+#Preview {
         BreedListView(
             store: Store(initialState: BreedListFeature.State()) {
                 BreedListFeature()
