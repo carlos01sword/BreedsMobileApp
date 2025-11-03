@@ -12,8 +12,7 @@ extension BreedsClient: DependencyKey {
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let dtos = try decoder.decode([BreedDTO].self, from: data)
-                return dtos.map(Breed.init(dto:))
+                return (try decoder.decode([BreedDTO].self, from: data)).map(\.breed)
             } catch {
                 throw NetworkError.decoding(error)
             }
