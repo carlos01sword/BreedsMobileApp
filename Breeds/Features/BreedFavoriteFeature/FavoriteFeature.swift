@@ -11,6 +11,10 @@ struct FavoriteFeature {
         var favorites: IdentifiedArrayOf<Breed> {
             favoriteBreeds
         }
+        
+        init(favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
+                self._favoriteBreeds = favoriteBreeds
+            }
     }
 
     enum Action: Equatable {

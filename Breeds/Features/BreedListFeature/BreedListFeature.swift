@@ -10,6 +10,14 @@ struct BreedListFeature {
         @Shared(.favoriteBreeds) var favoriteBreeds
         var isLoading: Bool = false
         var errorMessage: String?
+        
+        init(
+            breeds: IdentifiedArrayOf<Breed> = [],
+            favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)
+        ) {
+            self.breeds = breeds
+            self._favoriteBreeds = favoriteBreeds
+        }
     }
 
     enum Action: Equatable {
@@ -37,13 +45,7 @@ struct BreedListFeature {
                 
             case .breedsResponse(.success(let breeds)):
                 state.isLoading = false
-                let favoriteIDs = Set(state.favoriteBreeds.map(\.id))
-                let mergedBreeds = breeds.map {
-                    var breed = $0
-                    breed.isFavorite = favoriteIDs.contains(breed.id)
-                    return breed
-                }
-                state.breeds = IdentifiedArray(uniqueElements: mergedBreeds)
+                state.breeds = IdentifiedArray(uniqueElements: breeds)
                 return .none
                 
             case .breedsResponse(.failure(let error)):
@@ -56,18 +58,13 @@ struct BreedListFeature {
                 return .none
                 
             case .breedFavoriteToggled(let id):
-                guard var breed = state.breeds[id: id] else { return .none }
-
-                let isCurrentlyFavorite = state.favoriteBreeds.contains(where: { $0.id == id })
-                let newIsFavorite = !isCurrentlyFavorite
-                breed.isFavorite = newIsFavorite
-                state.breeds[id: id] = breed
-
-                state.$favoriteBreeds.withLock { favorites in
-                    if newIsFavorite {
-                        favorites.append(breed)
-                    } else {
+                if state.favoriteBreeds.contains(where: { $0.id == id }) {
+                    _ = state.$favoriteBreeds.withLock { favorites in
                         favorites.remove(id: id)
+                    }
+                } else if let breed = state.breeds[id: id] {
+                    _ = state.$favoriteBreeds.withLock { favorites in
+                        favorites.append(breed)
                     }
                 }
                 return .none

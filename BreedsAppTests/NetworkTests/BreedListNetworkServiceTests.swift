@@ -3,13 +3,10 @@ import ComposableArchitecture
 @testable import Breeds
 
 @MainActor
-final class BreedListFeatureTests: XCTestCase {
+final class BreedListNetworkServiceTests: XCTestCase {
 
     func testFetchBreedsSuccess() async {
-        let mockBreeds = [
-            Breed(id: "1", name: "Abyssinian", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: nil, isFavorite: false),
-            Breed(id: "2", name: "Siamese", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: nil, isFavorite: false)
-        ]
+        let mockBreeds = [MockData.breed1, MockData.breed2]
         
         let store = TestStore(initialState: BreedListFeature.State()) {
             BreedListFeature()
