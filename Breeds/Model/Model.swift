@@ -14,8 +14,8 @@ nonisolated struct Breed: Equatable, Identifiable, Codable {
 }
 
 extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Breed>>.Default {
-  static var breeds: Self {
-    Self[.fileStorage(.documentsDirectory.appending(component: "breeds.json")),
+  static var favoriteBreeds: Self {
+    Self[.fileStorage(.documentsDirectory.appending(component: "user-favorites.json")),
       default: []
     ]
   }

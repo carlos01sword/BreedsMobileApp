@@ -14,6 +14,7 @@ struct FavoriteView: View {
                     ForEach(store.favorites) { breed in
                         BreedRowView(
                             breed: breed,
+                            favoriteBreeds: store.favorites,
                             onFavoriteTapped: { store.send(.breedFavoriteToggled(id: breed.id)) }
                         )
                     }

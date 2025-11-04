@@ -1,9 +1,11 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct BreedRowView: View {
     
     
     var breed: Breed
+    let favoriteBreeds: IdentifiedArrayOf<Breed>
     var onFavoriteTapped: () -> Void
     
     var body: some View {
@@ -20,7 +22,7 @@ struct BreedRowView: View {
             
             Spacer()
             Button(action: onFavoriteTapped){
-                Image(systemName: breed.isFavorite ? "star.fill" : "star")
+                Image(systemName: isFavorite ? "star.fill" : "star")
                     .foregroundColor(.yellow)
             }
         }
@@ -30,6 +32,10 @@ struct BreedRowView: View {
                 .fill(Color(.systemBackground))
                 .shadow()
         )
+    }
+    
+    private var isFavorite: Bool {
+        favoriteBreeds.contains(where: { $0.id == breed.id })
     }
 }
 
@@ -41,8 +47,22 @@ private extension CGFloat {
 #if DEBUG
 #Preview {
     @Previewable @State var isFavorite: Bool = false
-    BreedRowView(breed: Breed(id: "01", name: "Cat meow meow", origin: "", temperament: "", description: "", lifeSpan: "", referenceImageID: "", isFavorite: isFavorite),
-                 onFavoriteTapped: {isFavorite.toggle()})
-        .padding()
+    let sampleBreed = Breed(
+        id: "01",
+        name: "Cat meow meow",
+        origin: "",
+        temperament: "",
+        description: "",
+        lifeSpan: "",
+        referenceImageID: "",
+        isFavorite: isFavorite
+    )
+
+    BreedRowView(
+        breed: sampleBreed,
+        favoriteBreeds: isFavorite ? [sampleBreed] : [],
+        onFavoriteTapped: { isFavorite.toggle() }
+    )
+    .padding()
 }
 #endif

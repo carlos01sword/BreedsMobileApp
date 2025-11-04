@@ -6,9 +6,8 @@ struct BreedListFeature {
     
     @ObservableState
     struct State: Equatable {
-        @ObservationStateIgnored
-        @Shared(.breeds) var breeds
-        
+        var breeds: IdentifiedArrayOf<Breed> = []
+        @Shared(.favoriteBreeds) var favoriteBreeds
         var isLoading: Bool = false
         var errorMessage: String?
     }
@@ -20,7 +19,7 @@ struct BreedListFeature {
     }
 
     @Dependency(\.breedsClient) var breedsClient
-
+    
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -38,7 +37,13 @@ struct BreedListFeature {
                 
             case .breedsResponse(.success(let breeds)):
                 state.isLoading = false
-                state.$breeds.withLock { $0 = IdentifiedArray(uniqueElements: breeds) }
+                let favoriteIDs = Set(state.favoriteBreeds.map(\.id))
+                let mergedBreeds = breeds.map {
+                    var breed = $0
+                    breed.isFavorite = favoriteIDs.contains(breed.id)
+                    return breed
+                }
+                state.breeds = IdentifiedArray(uniqueElements: mergedBreeds)
                 return .none
                 
             case .breedsResponse(.failure(let error)):
@@ -51,7 +56,20 @@ struct BreedListFeature {
                 return .none
                 
             case .breedFavoriteToggled(let id):
-                state.$breeds.withLock { $0[id: id]?.isFavorite.toggle() }
+                guard var breed = state.breeds[id: id] else { return .none }
+
+                let isCurrentlyFavorite = state.favoriteBreeds.contains(where: { $0.id == id })
+                let newIsFavorite = !isCurrentlyFavorite
+                breed.isFavorite = newIsFavorite
+                state.breeds[id: id] = breed
+
+                state.$favoriteBreeds.withLock { favorites in
+                    if newIsFavorite {
+                        favorites.append(breed)
+                    } else {
+                        favorites.remove(id: id)
+                    }
+                }
                 return .none
             }
         }
