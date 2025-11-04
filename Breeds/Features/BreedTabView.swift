@@ -5,7 +5,6 @@ struct BreedTabView: View {
     var store: StoreOf<BreedListFeature>
     var favoriteStore: StoreOf<FavoriteFeature>
         
-
     var body: some View {
         TabView {
             BreedListView(store: store)

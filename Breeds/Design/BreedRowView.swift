@@ -3,7 +3,6 @@ import SwiftUI
 
 struct BreedRowView: View {
     
-    
     var breed: Breed
     let favoriteBreeds: IdentifiedArrayOf<Breed>
     var onFavoriteTapped: () -> Void

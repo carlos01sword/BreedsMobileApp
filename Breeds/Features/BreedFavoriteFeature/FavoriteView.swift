@@ -6,10 +6,10 @@ struct FavoriteView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                if store.favorites.isEmpty{
-                    FavoriteEmptyStateView()
-                }
+            if store.favorites.isEmpty{
+                FavoriteEmptyStateView()
+            }
+            else {
                 ScrollView {
                     ForEach(store.favorites) { breed in
                         BreedRowView(
