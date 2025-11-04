@@ -44,8 +44,8 @@ private extension CGFloat {
 }
 
 #if DEBUG
-#Preview {
-    @Previewable @State var isFavorite: Bool = false
+#Preview("Interactive Favorite Toggle") {
+    @Previewable @State var favorites: IdentifiedArrayOf<Breed> = []
     let sampleBreed = Breed(
         id: "01",
         name: "Cat meow meow",
@@ -53,14 +53,19 @@ private extension CGFloat {
         temperament: "",
         description: "",
         lifeSpan: "",
-        referenceImageID: "",
-        isFavorite: isFavorite
+        referenceImageID: nil,
     )
 
     BreedRowView(
         breed: sampleBreed,
-        favoriteBreeds: isFavorite ? [sampleBreed] : [],
-        onFavoriteTapped: { isFavorite.toggle() }
+        favoriteBreeds: favorites,
+        onFavoriteTapped: {
+            if favorites[id: sampleBreed.id] != nil {
+                favorites.remove(id: sampleBreed.id)
+            } else {
+                favorites.append(sampleBreed)
+            }
+        }
     )
     .padding()
 }

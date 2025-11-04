@@ -17,8 +17,7 @@ extension BreedDTO {
             temperament: self.temperament,
             description: self.description,
             lifeSpan: self.lifeSpan,
-            referenceImageID: self.referenceImageID,
-            isFavorite: false
+            referenceImageID: self.referenceImageID
         )
     }
 }
