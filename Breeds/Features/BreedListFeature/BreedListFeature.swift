@@ -18,12 +18,15 @@ struct BreedListFeature {
             self.breeds = breeds
             self._favoriteBreeds = favoriteBreeds
         }
+        var selectedBreed: Breed?
     }
 
     enum Action: Equatable {
         case fetchBreeds
         case breedsResponse(TaskResult<[Breed]>)
         case breedFavoriteToggled(id: Breed.ID)
+        case breedSelectTapped(Breed)
+        case dismissDetail
     }
 
     @Dependency(\.breedsClient) var breedsClient
@@ -67,6 +70,14 @@ struct BreedListFeature {
                         favorites.append(breed)
                     }
                 }
+                return .none
+
+            case .breedSelectTapped(let breed):
+                state.selectedBreed = breed
+                return .none
+
+            case .dismissDetail:
+                state.selectedBreed = nil
                 return .none
             }
         }

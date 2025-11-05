@@ -46,17 +46,28 @@ struct ImageCard: View {
     }
 
     var body: some View {
-        AsyncImage(url: url) { image in
-            image
-                .resizable()
-                .scaledToFill()
-                .cardImageStyle()
-        } placeholder: {
-            Image(systemName: "pawprint.fill")
-                .resizable()
-                .scaledToFit()
-                .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
-                .cardImageStyle()
+
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .cardImageStyle()
+
+            case .failure:
+                Image(systemName: "pawprint.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
+                    .cardImageStyle()
+
+            @unknown default:
+                EmptyView()
+            }
         }
     }
 }
@@ -86,7 +97,7 @@ struct InfoRow: View {
             description:
                 "meow meows all around the world. Meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow",
             lifeSpan: "10-20",
-            referenceImageID: "EPF2easdasdjNS0",
+            referenceImageID: "0XYvRd7oD",
         )
 
         BreedDetailCardView(breed: sampleBreed)
