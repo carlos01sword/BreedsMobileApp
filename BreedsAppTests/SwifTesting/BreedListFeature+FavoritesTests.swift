@@ -1,11 +1,13 @@
-import XCTest
+import Testing
 import ComposableArchitecture
 @testable import Breeds
 
+@Suite("Breed List Feature – Favorites")
 @MainActor
-final class BreedListFavoriteTests: XCTestCase {
+struct BreedListFeatureFavoritesTests {
     
-    func testTogglingBreedAddsToFavorites() async {
+    @Test
+    func togglingBreedAddsToFavorites() async {
         let breed = MockData.breed1
         let store = TestStore(initialState: MockData.makeState(breeds: [breed])) {
             BreedListFeature()
@@ -15,10 +17,11 @@ final class BreedListFavoriteTests: XCTestCase {
             $0.$favoriteBreeds.withLock { $0.append(breed) }
         }
         
-        XCTAssertTrue(store.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
+        #expect(store.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
     }
     
-    func testTogglingBreedRemovesFromFavorites() async {
+    @Test
+    func togglingBreedRemovesFromFavorites() async {
         let favorited = MockData.favoritedBreed1
         let store = TestStore(
             initialState: MockData.makeState(breeds: [favorited], favorites: [favorited])
@@ -30,10 +33,11 @@ final class BreedListFavoriteTests: XCTestCase {
             $0.$favoriteBreeds.withLock { $0.removeAll() }
         }
         
-        XCTAssertTrue(store.state.favoriteBreeds.isEmpty)
+        #expect(store.state.favoriteBreeds.isEmpty)
     }
     
-    func testBreedFavoriteToggled_IgnoresUnknownID() async {
+    @Test
+    func breedFavoriteToggled_IgnoresUnknownID() async {
         let breed = MockData.breed1
         let initialState = MockData.makeState(breeds: [breed])
         
@@ -42,10 +46,11 @@ final class BreedListFavoriteTests: XCTestCase {
         }
         
         await store.send(.breedFavoriteToggled(id: "unknown-id"))
-        XCTAssertEqual(store.state, initialState)
+        #expect(store.state == initialState)
     }
     
-    func testCrossFeatureSync_RemovalReflectsInBreedList() async {
+    @Test
+    func crossFeatureSync_RemovalReflectsInBreedList() async {
         let favorited = MockData.favoritedBreed1
         
         let sharedFavorites = Shared<IdentifiedArrayOf<Breed>>(
@@ -73,7 +78,6 @@ final class BreedListFavoriteTests: XCTestCase {
             $0.$favoriteBreeds.withLock { $0.removeAll() }
         }
         
-        XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
+        #expect(breedListStore.state.favoriteBreeds.isEmpty)
     }
 }
-
