@@ -2,11 +2,11 @@ import ComposableArchitecture
 import SwiftUI
 
 struct BreedRowView: View {
-    
+
     var breed: Breed
-    let favoriteBreeds: IdentifiedArrayOf<Breed>
+    var isFavorite: Bool
     var onFavoriteTapped: () -> Void
-    
+
     var body: some View {
         HStack(spacing: .rowSpacing) {
             Image(systemName: "pawprint.fill")
@@ -18,7 +18,7 @@ struct BreedRowView: View {
             Text(breed.name)
                 .font(.headline)
                 .foregroundColor(.primary)
-            
+
             Spacer()
             Button(action: onFavoriteTapped){
                 Image(systemName: isFavorite ? "star.fill" : "star")
@@ -32,10 +32,6 @@ struct BreedRowView: View {
                 .shadow()
         )
     }
-    
-    private var isFavorite: Bool {
-        favoriteBreeds.contains(where: { $0.id == breed.id })
-    }
 }
 
 private extension CGFloat {
@@ -45,7 +41,7 @@ private extension CGFloat {
 
 #if DEBUG
 #Preview("Interactive Favorite Toggle") {
-    @Previewable @State var favorites: IdentifiedArrayOf<Breed> = []
+  @Previewable @State var isFavorite: Bool = false
     let sampleBreed = Breed(
         id: "01",
         name: "Cat meow meow",
@@ -58,13 +54,9 @@ private extension CGFloat {
 
     BreedRowView(
         breed: sampleBreed,
-        favoriteBreeds: favorites,
+        isFavorite: isFavorite,
         onFavoriteTapped: {
-            if favorites[id: sampleBreed.id] != nil {
-                favorites.remove(id: sampleBreed.id)
-            } else {
-                favorites.append(sampleBreed)
-            }
+            isFavorite.toggle()
         }
     )
     .padding()

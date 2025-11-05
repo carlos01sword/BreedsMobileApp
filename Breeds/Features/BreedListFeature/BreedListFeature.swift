@@ -72,3 +72,9 @@ struct BreedListFeature {
         }
     }
 }
+
+extension BreedListFeature.State {
+    func isFavorite(_ breed: Breed) -> Bool {
+        favoriteBreeds.contains(where: { $0.id == breed.id })
+    }
+}
