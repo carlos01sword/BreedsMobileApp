@@ -12,17 +12,29 @@ struct FavoriteView: View {
             else {
                 ScrollView {
                     ForEach(store.favorites) { breed in
-                        BreedRowView(
-                            breed: breed,
-                            isFavorite: true,
-                            onFavoriteTapped: { store.send(.breedFavoriteToggled(id: breed.id)) }
-                        )
+                        Button {
+                            store.send(.breedSelectTapped(breed))
+                        } label: {
+                            BreedRowView(
+                                breed: breed,
+                                isFavorite: true,
+                                onFavoriteTapped: { store.send(.breedFavoriteToggled(id: breed.id)) }
+                            )
+                        }
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal)
                     .padding(.vertical, ConstantsUI.defaultVerticalSpacing)
                 }
                 .navigationTitle("⭐ Favorites")
+                .navigationDestination(
+                    item: Binding(
+                        get: { store.selectedBreed },
+                        set: { _ in store.send(.dismissDetail) }
+                    )
+                ) { breed in
+                    DetailView(breed: breed)
+                }
             }
         }
     }
