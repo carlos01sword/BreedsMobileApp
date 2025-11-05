@@ -45,18 +45,9 @@ private extension CGFloat {
 #if DEBUG
 #Preview("Interactive Favorite Toggle") {
   @Previewable @State var isFavorite: Bool = false
-    let sampleBreed = Breed(
-        id: "01",
-        name: "Cat meow meow",
-        origin: "",
-        temperament: "",
-        description: "",
-        lifeSpan: "",
-        referenceImageID: nil,
-    )
 
     BreedRowView(
-        breed: sampleBreed,
+        breed: MockData.sampleBreed,
         isFavorite: isFavorite,
         onFavoriteTapped: {
             isFavorite.toggle()

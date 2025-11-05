@@ -4,11 +4,34 @@ import SwiftUI
 struct DetailView: View {
 
     var breed: Breed
+    var isFavorite: Bool
+
+    //@Bindable var store: StoreOf<BreedListFeature>
 
     var body: some View{
         NavigationStack{
-            BreedDetailCardView(breed: breed)
-                .toolbar(.hidden, for: .tabBar)
+            ScrollView {
+                VStack(spacing: ConstantsUI.largeVerticalSpacing) {
+
+                    Text(breed.name)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+
+                    ImageCardView(breed: breed)
+
+                    InfoCardView(breed: breed)
+
+                    Button(action: {
+                        print("TODO: SEND ACTION VIA STORE")
+                    }) {
+                        Image(systemName: isFavorite ? "star.fill" : "star")
+                            .foregroundColor(.yellow)
+                    }
+
+                }
+                .padding(.bottom, ConstantsUI.defaultPadding)
+            }
+            .toolbar(.hidden, for: .tabBar)
         }
     }
 }
@@ -16,18 +39,10 @@ struct DetailView: View {
 
 #if DEBUG
 #Preview{
-
-    let sampleBreed = Breed(
-        id: "01",
-        name: "Cat meow meow",
-        origin: "meow meow land",
-        temperament: "very meow",
-        description:
-            "meow meows all around the world. Meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow",
-        lifeSpan: "10-20",
-        referenceImageID: "0XYvRd7oD",
+    @Previewable @State var isFavorite: Bool = false
+    DetailView(
+        breed: MockData.sampleBreed,
+        isFavorite: isFavorite,
     )
-
-    DetailView(breed: sampleBreed)
 }
 #endif

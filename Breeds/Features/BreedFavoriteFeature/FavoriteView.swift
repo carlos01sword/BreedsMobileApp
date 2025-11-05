@@ -33,7 +33,7 @@ struct FavoriteView: View {
                         set: { _ in store.send(.dismissDetail) }
                     )
                 ) { breed in
-                    DetailView(breed: breed)
+                    DetailView(breed: breed, isFavorite: true)
                 }
             }
         }
