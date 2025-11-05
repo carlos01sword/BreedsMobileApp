@@ -27,7 +27,7 @@ struct BreedListFeature {
     }
 
     @Dependency(\.breedsClient) var breedsClient
-    
+ 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
