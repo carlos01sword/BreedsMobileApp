@@ -6,16 +6,14 @@ struct DetailFeature {
     @ObservableState
     struct State: Equatable {
         let breed: Breed
+        var isFavorite: Bool { favoriteBreeds.contains(where: { $0.id == breed.id }) }
 
+        @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
 
         init(breed: Breed, favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
             self._favoriteBreeds = favoriteBreeds
             self.breed = breed
-        }
-
-        var isFavorite: Bool {
-            favoriteBreeds.contains(where: { $0.id == breed.id })
         }
     }
 

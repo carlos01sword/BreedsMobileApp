@@ -29,16 +29,23 @@ struct FavoriteView: View {
                 .navigationTitle("⭐ Favorites")
                 .navigationDestination(
                     item: Binding(
-                        get: { store.selectedBreed },
+                        get: { store.detail?.breed },
                         set: { _ in store.send(.dismissDetail) }
                     )
-                ) { breed in
-                    DetailView(breed: breed, isFavorite: true)
+                ) { _ in
+                    if let detailStore = store.scope(state: \.detail, action: \.detail) {
+                        DetailView(
+                            breed: detailStore.state.breed,
+                            isFavorite: detailStore.state.isFavorite,
+                            store: detailStore
+                        )
+                    }
                 }
             }
         }
     }
 }
+
 
 #if DEBUG
     #Preview {

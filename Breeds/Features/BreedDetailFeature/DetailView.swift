@@ -6,7 +6,7 @@ struct DetailView: View {
     var breed: Breed
     var isFavorite: Bool
 
-    //@Bindable var store: StoreOf<BreedListFeature>
+    @Bindable var store: StoreOf<DetailFeature>
 
     var body: some View{
         NavigationStack{
@@ -22,12 +22,11 @@ struct DetailView: View {
                     InfoCardView(breed: breed)
 
                     Button {
-                        print("TODO: SEND ACTION VIA STORE")
+                        store.send(.favoriteButtonTapped)
                     } label: {
                         Text(isFavorite ? "Remove from Favorites" : "Add to Favorites")
                             .favoritesButtonStyle()
                     }
-
                 }
                 .padding(.bottom, ConstantsUI.defaultPadding)
             }
@@ -43,6 +42,10 @@ struct DetailView: View {
     DetailView(
         breed: MockData.sampleBreed,
         isFavorite: isFavorite,
+        store: StoreOf<DetailFeature>(
+            initialState: DetailFeature.State(breed: MockData.sampleBreed),
+            reducer: { DetailFeature() }
+        )
     )
 }
 #endif

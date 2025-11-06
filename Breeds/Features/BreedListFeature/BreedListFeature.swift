@@ -7,10 +7,14 @@ struct BreedListFeature {
     @ObservableState
     struct State: Equatable {
         var breeds: IdentifiedArrayOf<Breed> = []
-        @Shared(.favoriteBreeds) var favoriteBreeds
         var isLoading: Bool = false
         var errorMessage: String?
-        
+        var selectedBreed: Breed?
+        var detail: DetailFeature.State?
+
+        @ObservationStateIgnored
+        @Shared(.favoriteBreeds) var favoriteBreeds
+
         init(
             breeds: IdentifiedArrayOf<Breed> = [],
             favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)
@@ -18,7 +22,6 @@ struct BreedListFeature {
             self.breeds = breeds
             self._favoriteBreeds = favoriteBreeds
         }
-        var selectedBreed: Breed?
     }
 
     enum Action: Equatable {
@@ -27,6 +30,7 @@ struct BreedListFeature {
         case breedFavoriteToggled(id: Breed.ID)
         case breedSelectTapped(Breed)
         case dismissDetail
+        case detail(DetailFeature.Action)
     }
 
     @Dependency(\.breedsClient) var breedsClient
@@ -73,14 +77,18 @@ struct BreedListFeature {
                 return .none
 
             case .breedSelectTapped(let breed):
-                state.selectedBreed = breed
+                state.detail = DetailFeature.State(breed:breed)
                 return .none
 
             case .dismissDetail:
-                state.selectedBreed = nil
+                state.detail = nil
+                return .none
+
+            case .detail:
                 return .none
             }
         }
+        .ifLet(\.detail, action: \.detail) { DetailFeature() }
     }
 }
 

@@ -42,11 +42,17 @@ struct BreedListView: View {
             }
             .navigationDestination(
                 item: Binding(
-                    get: { store.selectedBreed },
+                    get: { store.detail?.breed },
                     set: { _ in store.send(.dismissDetail) }
                 )
-            ) { breed in
-                DetailView(breed: breed, isFavorite: store.state.isFavorite(breed))
+            ) { _ in
+                if let detailStore = store.scope(state: \.detail, action: \.detail) {
+                    DetailView(
+                        breed: detailStore.state.breed,
+                        isFavorite: detailStore.state.isFavorite,
+                        store: detailStore
+                    )
+                }
             }
         }
     }
