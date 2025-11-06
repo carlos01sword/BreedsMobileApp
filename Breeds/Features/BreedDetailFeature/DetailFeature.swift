@@ -25,15 +25,10 @@ struct DetailFeature {
         Reduce {state,action in
             switch action {
             case .favoriteButtonTapped:
-                if state.isFavorite {
                     _ = state.$favoriteBreeds.withLock { favorites in
+                        isFavorite ? favorites.remove(id: state.breed.id) : favorites.append(state.breed)
                         favorites.remove(id: state.breed.id)
-                    }
-                } else {
-                    _ = state.$favoriteBreeds.withLock { favorites in
-                        favorites.append(state.breed)
-                    }
-                }
+                     }
                 return .none
             }
         }
