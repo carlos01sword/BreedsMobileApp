@@ -9,7 +9,6 @@ struct BreedListFeature {
         var breeds: IdentifiedArrayOf<Breed> = []
         var isLoading: Bool = false
         var errorMessage: String?
-        var selectedBreed: Breed?
         var detail: DetailFeature.State?
 
         @ObservationStateIgnored
