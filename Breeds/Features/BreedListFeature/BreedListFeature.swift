@@ -28,7 +28,7 @@ struct BreedListFeature {
         case fetchBreeds
         case breedsResponse(TaskResult<[Breed]>)
         case breedFavoriteToggled(id: Breed.ID)
-        case breedSelectTapped(Breed)
+        case breedTapped(Breed)
         case dismissDetail
         case detail(DetailFeature.Action)
     }
@@ -76,7 +76,7 @@ struct BreedListFeature {
                 }
                 return .none
 
-            case .breedSelectTapped(let breed):
+            case .breedTapped(let breed):
                 state.detail = DetailFeature.State(breed:breed)
                 return .none
 

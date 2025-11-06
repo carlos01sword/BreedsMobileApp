@@ -13,7 +13,7 @@ struct FavoriteView: View {
                 ScrollView {
                     ForEach(store.favorites) { breed in
                         Button {
-                            store.send(.breedSelectTapped(breed))
+                            store.send(.breedTapped(breed))
                         } label: {
                             BreedRowView(
                                 breed: breed,

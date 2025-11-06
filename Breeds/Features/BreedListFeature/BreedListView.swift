@@ -18,7 +18,7 @@ struct BreedListView: View {
                 ScrollView {
                     ForEach(store.breeds) { breed in
                         Button {
-                            store.send(.breedSelectTapped(breed))
+                            store.send(.breedTapped(breed))
                         } label: {
                             BreedRowView(
                                 breed: breed,
