@@ -3,9 +3,6 @@ import SwiftUI
 
 struct DetailView: View {
 
-    var breed: Breed
-    var isFavorite: Bool
-
     @Bindable var store: StoreOf<DetailFeature>
 
     var body: some View{
@@ -13,18 +10,18 @@ struct DetailView: View {
             ScrollView {
                 VStack(spacing: ConstantsUI.largeVerticalSpacing) {
 
-                    Text(breed.name)
+                    Text(store.breed.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    ImageCardView(breed: breed)
+                    ImageCardView(breed: store.breed)
 
-                    InfoCardView(breed: breed)
+                    InfoCardView(breed: store.breed)
 
                     Button {
                         store.send(.favoriteButtonTapped)
                     } label: {
-                        Text(isFavorite ? "Remove from Favorites" : "Add to Favorites")
+                        Text(store.isFavorite ? "Remove from Favorites" : "Add to Favorites")
                             .favoritesButtonStyle()
                     }
                 }
@@ -40,8 +37,6 @@ struct DetailView: View {
 #Preview{
     @Previewable @State var isFavorite: Bool = false
     DetailView(
-        breed: MockData.sampleBreed,
-        isFavorite: isFavorite,
         store: StoreOf<DetailFeature>(
             initialState: DetailFeature.State(breed: MockData.sampleBreed),
             reducer: { DetailFeature() }

@@ -34,11 +34,7 @@ struct FavoriteView: View {
                     )
                 ) { _ in
                     if let detailStore = store.scope(state: \.detail, action: \.detail) {
-                        DetailView(
-                            breed: detailStore.state.breed,
-                            isFavorite: detailStore.state.isFavorite,
-                            store: detailStore
-                        )
+                        DetailView( store: detailStore )
                     }
                 }
             }
