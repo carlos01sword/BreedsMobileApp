@@ -6,11 +6,15 @@ struct FavoriteFeature {
 
     @ObservableState
     struct State: Equatable {
-        @Shared(.inMemory("all-breeds")) var breeds: IdentifiedArrayOf<Breed> = []
+        @Shared(.favoriteBreeds) var favoriteBreeds
         
         var favorites: IdentifiedArrayOf<Breed> {
-            breeds.filter (\.isFavorite)
+            favoriteBreeds
         }
+        
+        init(favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
+                self._favoriteBreeds = favoriteBreeds
+            }
     }
 
     enum Action: Equatable {
@@ -21,7 +25,7 @@ struct FavoriteFeature {
         Reduce { state, action in
             switch action {
             case .breedFavoriteToggled(let id):
-                state.$breeds.withLock { $0[id: id]?.isFavorite.toggle() }
+                _ = state.$favoriteBreeds.withLock { $0.remove(id: id) }
                 return .none
             }
         }

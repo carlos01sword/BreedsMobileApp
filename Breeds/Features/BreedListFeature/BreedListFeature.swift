@@ -6,9 +6,18 @@ struct BreedListFeature {
     
     @ObservableState
     struct State: Equatable {
-        @Shared(.inMemory("all-breeds")) var breeds: IdentifiedArrayOf<Breed> = []
+        var breeds: IdentifiedArrayOf<Breed> = []
+        @Shared(.favoriteBreeds) var favoriteBreeds
         var isLoading: Bool = false
         var errorMessage: String?
+        
+        init(
+            breeds: IdentifiedArrayOf<Breed> = [],
+            favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)
+        ) {
+            self.breeds = breeds
+            self._favoriteBreeds = favoriteBreeds
+        }
     }
 
     enum Action: Equatable {
@@ -18,7 +27,7 @@ struct BreedListFeature {
     }
 
     @Dependency(\.breedsClient) var breedsClient
-
+ 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -36,7 +45,7 @@ struct BreedListFeature {
                 
             case .breedsResponse(.success(let breeds)):
                 state.isLoading = false
-                state.$breeds.withLock { $0 = IdentifiedArray(uniqueElements: breeds) }
+                state.breeds = IdentifiedArray(uniqueElements: breeds)
                 return .none
                 
             case .breedsResponse(.failure(let error)):
@@ -49,9 +58,23 @@ struct BreedListFeature {
                 return .none
                 
             case .breedFavoriteToggled(let id):
-                state.$breeds.withLock { $0[id: id]?.isFavorite.toggle() }
+                if state.favoriteBreeds.contains(where: { $0.id == id }) {
+                    _ = state.$favoriteBreeds.withLock { favorites in
+                        favorites.remove(id: id)
+                    }
+                } else if let breed = state.breeds[id: id] {
+                    _ = state.$favoriteBreeds.withLock { favorites in
+                        favorites.append(breed)
+                    }
+                }
                 return .none
             }
         }
+    }
+}
+
+extension BreedListFeature.State {
+    func isFavorite(_ breed: Breed) -> Bool {
+        favoriteBreeds.contains(where: { $0.id == breed.id })
     }
 }

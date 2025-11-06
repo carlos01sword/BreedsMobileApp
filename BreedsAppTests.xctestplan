@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "6F16ABB3-8BDA-4FE2-9D00-CAD3294E6B3A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Breeds.xcodeproj",
+        "identifier" : "0ADA473A2EB8F23C000C71AA",
+        "name" : "BreedsAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}
