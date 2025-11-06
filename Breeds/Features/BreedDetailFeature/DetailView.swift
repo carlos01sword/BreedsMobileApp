@@ -21,11 +21,11 @@ struct DetailView: View {
 
                     InfoCardView(breed: breed)
 
-                    Button(action: {
+                    Button {
                         print("TODO: SEND ACTION VIA STORE")
-                    }) {
-                        Image(systemName: isFavorite ? "star.fill" : "star")
-                            .foregroundColor(.yellow)
+                    } label: {
+                        Text(isFavorite ? "Remove from Favorites" : "Add to Favorites")
+                            .favoritesButtonStyle()
                     }
 
                 }
