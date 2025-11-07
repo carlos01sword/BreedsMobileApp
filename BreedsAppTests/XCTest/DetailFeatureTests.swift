@@ -6,20 +6,26 @@ import ComposableArchitecture
 final class DetailTests: XCTestCase {
     
     func testFavoriteButtonTogglesState() async {
+        let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
+        let breed = MockData.breed1
         let store = TestStore(
-            initialState: DetailFeature.State( breed: MockData.breed1),
+            initialState: DetailFeature.State(
+                breed: MockData.breed1,
+                favoriteBreeds: sharedFavorites
+            ),
             reducer: { DetailFeature() }
         )
-        store.exhaustivity = .off(showSkippedAssertions: false)
 
-        // Toggle button to add to favorites
-        XCTAssertFalse(store.state.isFavorite)
-        await store.send(.favoriteButtonTapped)
-        XCTAssertTrue(store.state.isFavorite)
-
-        // Toggle button to remove from favorites
-        await store.send(.favoriteButtonTapped)
-        XCTAssertFalse(store.state.isFavorite)
+        await store.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                favorites.append(breed)
+            }
+        }
+        await store.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                _ = favorites.remove(id: breed.id)
+            }
+        }
     }
 
     func testCrossFeatureSync_ToggleFavoriteReflectsInBreedListAndFavoriteList() async {
@@ -50,24 +56,29 @@ final class DetailTests: XCTestCase {
             FavoriteFeature()
         }
 
-        detailStore.exhaustivity = .off(showSkippedAssertions: false)
-
         // No favorites in any feature
         XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
         XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
-        XCTAssertFalse(detailStore.state.isFavorite)
 
-        await detailStore.send(.favoriteButtonTapped)
+        // Toggle favorite on from the Detail screen
+        await detailStore.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                favorites.append(breed)
+            }
+        }
 
         // All features reflect the change
-        XCTAssertTrue(detailStore.state.isFavorite)
         XCTAssertTrue(breedListStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
         XCTAssertTrue(favoriteStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
 
-        await detailStore.send(.favoriteButtonTapped)
+        // Toggle favorite off from the Detail screen
+        await detailStore.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                _ = favorites.remove(id: breed.id)
+            }
+        }
 
         // All features reflect the removal
-        XCTAssertFalse(detailStore.state.isFavorite)
         XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
         XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
     }
@@ -85,11 +96,13 @@ final class DetailTests: XCTestCase {
             initialState: DetailFeature.State(breed: breed2, favoriteBreeds: sharedFavorites),
             reducer: { DetailFeature() }
         )
-        store1.exhaustivity = .off(showSkippedAssertions: false)
-        store2.exhaustivity = .off(showSkippedAssertions: false)
 
-        await store1.send(.favoriteButtonTapped)
-        XCTAssertTrue(store1.state.isFavorite)
+        // Toggle favorite for the first breed
+        await store1.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                favorites.append(breed1)
+            }
+        }
         XCTAssertFalse(store2.state.isFavorite)
     }
 }

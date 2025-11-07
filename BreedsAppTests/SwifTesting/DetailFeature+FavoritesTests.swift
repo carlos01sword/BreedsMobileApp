@@ -5,23 +5,34 @@ import ComposableArchitecture
 @Suite("Detail Feature - Favorites")
 @MainActor
 struct DetailFeatureTests {
-    
+
     @Test func favoriteButtonTogglesState() async {
+        let breed = MockData.breed1
+        let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
+
         let store = TestStore(
-            initialState: DetailFeature.State( breed: MockData.breed1),
+            initialState: DetailFeature.State(
+                breed: breed,
+                favoriteBreeds: sharedFavorites
+            ),
             reducer: { DetailFeature() }
         )
-        store.exhaustivity = .off(showSkippedAssertions: false)
 
-        // Toggle button to add to favorites
-        #expect(!store.state.isFavorite)
-        await store.send(.favoriteButtonTapped)
-        #expect(store.state.isFavorite)
+        // Add to favorites
+        await store.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                favorites.append(breed)
+            }
+        }
 
-        // Toggle button to remove from favorites
-        await store.send(.favoriteButtonTapped)
-        #expect(!store.state.isFavorite)
+        // Remove from favorites
+        await store.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                _ = favorites.remove(id: breed.id)
+            }
+        }
     }
+
 
     @Test func crossFeatureSync_ToggleFavoriteReflectsInBreedListAndFavoriteList() async {
         let breed = MockData.breed1
@@ -51,24 +62,29 @@ struct DetailFeatureTests {
             FavoriteFeature()
         }
 
-        detailStore.exhaustivity = .off(showSkippedAssertions: false)
-
         // No favorites in any feature
         #expect(breedListStore.state.favoriteBreeds.isEmpty)
         #expect(favoriteStore.state.favoriteBreeds.isEmpty)
-        #expect(!detailStore.state.isFavorite)
 
-        await detailStore.send(.favoriteButtonTapped)
+        // Toggle favorite on from the Detail screen
+        await detailStore.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                favorites.append(breed)
+            }
+        }
 
         // All features reflect the change
-        #expect(detailStore.state.isFavorite)
-        #expect(breedListStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
-        #expect(favoriteStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
+        #expect(!breedListStore.state.favoriteBreeds.isEmpty)
+        #expect(!favoriteStore.state.favoriteBreeds.isEmpty)
 
-        await detailStore.send(.favoriteButtonTapped)
+        // Toggle favorite off from the Detail screen
+        await detailStore.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                _ = favorites.remove(id: breed.id)
+            }
+        }
 
         // All features reflect the removal
-        #expect(!detailStore.state.isFavorite)
         #expect(breedListStore.state.favoriteBreeds.isEmpty)
         #expect(favoriteStore.state.favoriteBreeds.isEmpty)
     }
@@ -86,11 +102,15 @@ struct DetailFeatureTests {
             initialState: DetailFeature.State(breed: breed2, favoriteBreeds: sharedFavorites),
             reducer: { DetailFeature() }
         )
-        store1.exhaustivity = .off(showSkippedAssertions: false)
-        store2.exhaustivity = .off(showSkippedAssertions: false)
 
-        await store1.send(.favoriteButtonTapped)
-        #expect(store1.state.isFavorite)
+        // Toggle favorite for the first breed
+        await store1.send(.favoriteButtonTapped) {
+            $0.$favoriteBreeds.withLock { favorites in
+                favorites.append(breed1)
+            }
+        }
+
+        // Confirm no state change for the second breed
         #expect(!store2.state.isFavorite)
     }
 }
