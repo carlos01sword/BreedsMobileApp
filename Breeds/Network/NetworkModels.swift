@@ -5,7 +5,7 @@ struct BreedDTO: Decodable {
     let origin: String
     let temperament: String
     let lifeSpan: String
-    let referenceImageID: String?
+    let referenceImageId: String?
 }
 
 extension BreedDTO {
@@ -17,7 +17,7 @@ extension BreedDTO {
             temperament: self.temperament,
             description: self.description,
             lifeSpan: self.lifeSpan,
-            referenceImageID: self.referenceImageID
+            referenceImageID: self.referenceImageId
         )
     }
 }

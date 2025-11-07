@@ -7,10 +7,13 @@ struct BreedListFeature {
     @ObservableState
     struct State: Equatable {
         var breeds: IdentifiedArrayOf<Breed> = []
-        @Shared(.favoriteBreeds) var favoriteBreeds
         var isLoading: Bool = false
         var errorMessage: String?
-        
+        var detail: DetailFeature.State?
+
+        @ObservationStateIgnored
+        @Shared(.favoriteBreeds) var favoriteBreeds
+
         init(
             breeds: IdentifiedArrayOf<Breed> = [],
             favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)
@@ -24,6 +27,9 @@ struct BreedListFeature {
         case fetchBreeds
         case breedsResponse(TaskResult<[Breed]>)
         case breedFavoriteToggled(id: Breed.ID)
+        case breedTapped(Breed)
+        case dismissDetail
+        case detail(DetailFeature.Action)
     }
 
     @Dependency(\.breedsClient) var breedsClient
@@ -68,8 +74,20 @@ struct BreedListFeature {
                     }
                 }
                 return .none
+
+            case .breedTapped(let breed):
+                state.detail = DetailFeature.State(breed:breed)
+                return .none
+
+            case .dismissDetail:
+                state.detail = nil
+                return .none
+
+            case .detail:
+                return .none
             }
         }
+        .ifLet(\.detail, action: \.detail) { DetailFeature() }
     }
 }
 

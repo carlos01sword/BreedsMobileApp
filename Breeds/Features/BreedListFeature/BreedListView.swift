@@ -17,13 +17,17 @@ struct BreedListView: View {
                 }
                 ScrollView {
                     ForEach(store.breeds) { breed in
-                        BreedRowView(
-                            breed: breed,
-                            isFavorite: store.state.isFavorite(breed),
-                            onFavoriteTapped: {
-                                store.send(.breedFavoriteToggled(id: breed.id))
-                            }
-                        )
+                        Button {
+                            store.send(.breedTapped(breed))
+                        } label: {
+                            BreedRowView(
+                                breed: breed,
+                                isFavorite: store.state.isFavorite(breed),
+                                onFavoriteTapped: {
+                                    store.send(.breedFavoriteToggled(id: breed.id))
+                                }
+                            )
+                        }
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal)
@@ -34,6 +38,16 @@ struct BreedListView: View {
             .onAppear {
                 if store.breeds.isEmpty {
                     store.send(.fetchBreeds)
+                }
+            }
+            .navigationDestination(
+                item: Binding(
+                    get: { store.detail?.breed },
+                    set: { _ in store.send(.dismissDetail) }
+                )
+            ) { _ in
+                if let detailStore = store.scope(state: \.detail, action: \.detail) {
+                    DetailView( store: detailStore )
                 }
             }
         }
