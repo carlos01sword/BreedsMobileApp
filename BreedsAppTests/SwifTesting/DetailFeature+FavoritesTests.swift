@@ -1,11 +1,12 @@
-import XCTest
+import Testing
 import ComposableArchitecture
 @testable import Breeds
 
+@Suite("Detail Feature - Favorites")
 @MainActor
-final class DetailTests: XCTestCase {
+struct DetailFeatureTests {
     
-    func testFavoriteButtonTogglesState() async {
+    @Test func favoriteButtonTogglesState() async {
         let store = TestStore(
             initialState: DetailFeature.State( breed: MockData.breed1),
             reducer: { DetailFeature() }
@@ -13,16 +14,16 @@ final class DetailTests: XCTestCase {
         store.exhaustivity = .off(showSkippedAssertions: false)
 
         // Toggle button to add to favorites
-        XCTAssertFalse(store.state.isFavorite)
+        #expect(!store.state.isFavorite)
         await store.send(.favoriteButtonTapped)
-        XCTAssertTrue(store.state.isFavorite)
+        #expect(store.state.isFavorite)
 
         // Toggle button to remove from favorites
         await store.send(.favoriteButtonTapped)
-        XCTAssertFalse(store.state.isFavorite)
+        #expect(!store.state.isFavorite)
     }
 
-    func testCrossFeatureSync_ToggleFavoriteReflectsInBreedListAndFavoriteList() async {
+    @Test func crossFeatureSync_ToggleFavoriteReflectsInBreedListAndFavoriteList() async {
         let breed = MockData.breed1
         let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
 
@@ -53,22 +54,22 @@ final class DetailTests: XCTestCase {
         detailStore.exhaustivity = .off(showSkippedAssertions: false)
 
         // No favorites in any feature
-        XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
-        XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
-        XCTAssertFalse(detailStore.state.isFavorite)
+        #expect(breedListStore.state.favoriteBreeds.isEmpty)
+        #expect(favoriteStore.state.favoriteBreeds.isEmpty)
+        #expect(!detailStore.state.isFavorite)
 
         await detailStore.send(.favoriteButtonTapped)
 
         // All features reflect the change
-        XCTAssertTrue(detailStore.state.isFavorite)
-        XCTAssertTrue(breedListStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
-        XCTAssertTrue(favoriteStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
+        #expect(detailStore.state.isFavorite)
+        #expect(breedListStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
+        #expect(favoriteStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
 
         await detailStore.send(.favoriteButtonTapped)
 
         // All features reflect the removal
-        XCTAssertFalse(detailStore.state.isFavorite)
-        XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
-        XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
+        #expect(!detailStore.state.isFavorite)
+        #expect(breedListStore.state.favoriteBreeds.isEmpty)
+        #expect(favoriteStore.state.favoriteBreeds.isEmpty)
     }
 }
