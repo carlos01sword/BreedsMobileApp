@@ -28,9 +28,10 @@ struct DetailFeature {
                 state.$favoriteBreeds.withLock { favorites in
                     if state.isFavorite {
                         _ = favorites.remove(id: state.breed.id)
-                    } else {
-                        _ = favorites.append(state.breed)
-                    }
+                        return
+                    } 
+                    _ = favorites.append(state.breed)
+                    
                 }
                 return .none
             }
