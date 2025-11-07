@@ -71,4 +71,25 @@ final class DetailTests: XCTestCase {
         XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
         XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
     }
+
+    func testTogglingBreed_DoesNotAffectOthers () async throws {
+        let breed1 = MockData.breed1
+        let breed2 = MockData.breed2
+        let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
+
+        let store1 = TestStore(
+            initialState: DetailFeature.State(breed: breed1, favoriteBreeds: sharedFavorites),
+            reducer: { DetailFeature() }
+        )
+        let store2 = TestStore(
+            initialState: DetailFeature.State(breed: breed2, favoriteBreeds: sharedFavorites),
+            reducer: { DetailFeature() }
+        )
+        store1.exhaustivity = .off(showSkippedAssertions: false)
+        store2.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store1.send(.favoriteButtonTapped)
+        XCTAssertTrue(store1.state.isFavorite)
+        XCTAssertFalse(store2.state.isFavorite)
+    }
 }

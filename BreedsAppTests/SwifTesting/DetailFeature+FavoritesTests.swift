@@ -72,4 +72,25 @@ struct DetailFeatureTests {
         #expect(breedListStore.state.favoriteBreeds.isEmpty)
         #expect(favoriteStore.state.favoriteBreeds.isEmpty)
     }
+
+    @Test func togglingBreed_DoesNotAffectOthers() async throws {
+        let breed1 = MockData.breed1
+        let breed2 = MockData.breed2
+        let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
+
+        let store1 = TestStore(
+            initialState: DetailFeature.State(breed: breed1, favoriteBreeds: sharedFavorites),
+            reducer: { DetailFeature() }
+        )
+        let store2 = TestStore(
+            initialState: DetailFeature.State(breed: breed2, favoriteBreeds: sharedFavorites),
+            reducer: { DetailFeature() }
+        )
+        store1.exhaustivity = .off(showSkippedAssertions: false)
+        store2.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store1.send(.favoriteButtonTapped)
+        #expect(store1.state.isFavorite)
+        #expect(!store2.state.isFavorite)
+    }
 }
