@@ -4,13 +4,13 @@ import ComposableArchitecture
 
 @Suite("Breed List Feature – Network Service")
 @MainActor
-struct BreedListFeatureNetworkServiceTests{
+struct NetworkServiceTests{
 
     @Test func fetchBreedsSuccess() async {
         let mockBreeds = [MockData.breed1, MockData.breed2]
         
-        let store = TestStore(initialState: BreedListFeature.State()) {
-            BreedListFeature()
+        let store = TestStore(initialState: BreedListReducer.State()) {
+            BreedListReducer()
         }
         
         store.dependencies.breedsClient.fetchBreeds = { mockBreeds }

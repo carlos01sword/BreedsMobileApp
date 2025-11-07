@@ -4,13 +4,13 @@ import ComposableArchitecture
 @main
 struct BreedsApp: App {
     private let store = Store(
-        initialState: BreedListFeature.State(),
-        reducer: { BreedListFeature() }
+        initialState: BreedListReducer.State(),
+        reducer: { BreedListReducer() }
     )
     
     private let favoriteStore = Store(
-        initialState: FavoriteFeature.State(),
-        reducer: { FavoriteFeature() }
+        initialState: FavoriteReducer.State(),
+        reducer: { FavoriteReducer() }
     )
 
     var body: some Scene {

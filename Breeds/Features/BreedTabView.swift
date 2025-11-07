@@ -2,9 +2,9 @@ import ComposableArchitecture
 import SwiftUI
 
 struct BreedTabView: View {
-    var store: StoreOf<BreedListFeature>
-    var favoriteStore: StoreOf<FavoriteFeature>
-        
+    var store: StoreOf<BreedListReducer>
+    var favoriteStore: StoreOf<FavoriteReducer>
+
     var body: some View {
         TabView {
             BreedListView(store: store)
@@ -24,12 +24,12 @@ struct BreedTabView: View {
     #Preview {
         BreedTabView(
             store: Store(
-                initialState: BreedListFeature.State(),
-                reducer: { BreedListFeature() }
+                initialState: BreedListReducer.State(),
+                reducer: { BreedListReducer() }
             ),
             favoriteStore: Store(
-                initialState: FavoriteFeature.State(),
-                reducer: { FavoriteFeature() }
+                initialState: FavoriteReducer.State(),
+                reducer: { FavoriteReducer() }
             )
         )
     }

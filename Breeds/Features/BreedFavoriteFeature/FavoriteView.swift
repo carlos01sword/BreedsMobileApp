@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct FavoriteView: View {
-    @Bindable var store: StoreOf<FavoriteFeature>
+    @Bindable var store: StoreOf<FavoriteReducer>
 
     var body: some View {
         NavigationStack {
@@ -46,8 +46,8 @@ struct FavoriteView: View {
 #if DEBUG
     #Preview {
         FavoriteView(
-            store: Store(initialState: FavoriteFeature.State()) {
-                FavoriteFeature()
+            store: Store(initialState: FavoriteReducer.State()) {
+                FavoriteReducer()
             }
         )
     }

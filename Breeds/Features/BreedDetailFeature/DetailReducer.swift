@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 @Reducer
-struct DetailFeature {
+struct DetailReducer {
     @ObservableState
     struct State: Equatable {
         let breed: Breed

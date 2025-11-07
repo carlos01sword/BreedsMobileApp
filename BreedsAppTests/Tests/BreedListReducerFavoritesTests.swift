@@ -4,13 +4,13 @@ import ComposableArchitecture
 
 @Suite("Breed List Feature – Favorites")
 @MainActor
-struct BreedListFeatureFavoritesTests {
-    
+struct BreedListReducerFavoritesTests {
+
     @Test
     func togglingBreedAddsToFavorites() async {
         let breed = MockData.breed1
         let store = TestStore(initialState: MockData.makeState(breeds: [breed])) {
-            BreedListFeature()
+            BreedListReducer()
         }
         await store.send(.breedFavoriteToggled(id: breed.id)) {
             $0.$favoriteBreeds.withLock { $0.append(breed) }
@@ -23,7 +23,7 @@ struct BreedListFeatureFavoritesTests {
         let store = TestStore(
             initialState: MockData.makeState(breeds: [favorited], favorites: [favorited])
         ) {
-            BreedListFeature()
+            BreedListReducer()
         }
         
         await store.send(.breedFavoriteToggled(id: favorited.id)) {
@@ -37,7 +37,7 @@ struct BreedListFeatureFavoritesTests {
         let initialState = MockData.makeState(breeds: [breed])
         
         let store = TestStore(initialState: initialState) {
-            BreedListFeature()
+            BreedListReducer()
         }
         await store.send(.breedFavoriteToggled(id: "unknown-id"))
     }

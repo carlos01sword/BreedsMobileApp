@@ -2,14 +2,14 @@ import SwiftUI
 import ComposableArchitecture
 
 @Reducer
-struct BreedListFeature {
-    
+struct BreedListReducer {
+
     @ObservableState
     struct State: Equatable {
         var breeds: IdentifiedArrayOf<Breed> = []
         var isLoading: Bool = false
         var errorMessage: String?
-        var detail: DetailFeature.State?
+        var detail: DetailReducer.State?
 
         @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
@@ -29,7 +29,7 @@ struct BreedListFeature {
         case breedFavoriteToggled(id: Breed.ID)
         case breedTapped(Breed)
         case dismissDetail
-        case detail(DetailFeature.Action)
+        case detail(DetailReducer.Action)
     }
 
     @Dependency(\.breedsClient) var breedsClient
@@ -76,7 +76,7 @@ struct BreedListFeature {
                 return .none
 
             case .breedTapped(let breed):
-                state.detail = DetailFeature.State(breed:breed)
+                state.detail = DetailReducer.State(breed:breed)
                 return .none
 
             case .dismissDetail:
@@ -87,11 +87,11 @@ struct BreedListFeature {
                 return .none
             }
         }
-        .ifLet(\.detail, action: \.detail) { DetailFeature() }
+        .ifLet(\.detail, action: \.detail) { DetailReducer() }
     }
 }
 
-extension BreedListFeature.State {
+extension BreedListReducer.State {
     func isFavorite(_ breed: Breed) -> Bool {
         favoriteBreeds.contains(where: { $0.id == breed.id })
     }

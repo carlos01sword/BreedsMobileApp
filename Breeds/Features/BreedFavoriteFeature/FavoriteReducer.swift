@@ -2,12 +2,12 @@ import ComposableArchitecture
 import Foundation
 
 @Reducer
-struct FavoriteFeature {
+struct FavoriteReducer {
 
     @ObservableState
     struct State: Equatable {
         var favorites: IdentifiedArrayOf<Breed> { favoriteBreeds }
-        var detail: DetailFeature.State?
+        var detail: DetailReducer.State?
 
         @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
@@ -21,7 +21,7 @@ struct FavoriteFeature {
         case breedFavoriteToggled(id: Breed.ID)
         case breedTapped(Breed)
         case dismissDetail
-        case detail(DetailFeature.Action)
+        case detail(DetailReducer.Action)
     }
 
     var body: some Reducer<State, Action> {
@@ -32,7 +32,7 @@ struct FavoriteFeature {
                 return .none
                 
             case .breedTapped(let breed):
-                state.detail = DetailFeature.State(breed: breed)
+                state.detail = DetailReducer.State(breed: breed)
                 
                 return .none
                 
@@ -48,7 +48,7 @@ struct FavoriteFeature {
             }
         }
         .ifLet(\.detail, action: \.detail){
-            DetailFeature()
+            DetailReducer()
         }
     }
 }

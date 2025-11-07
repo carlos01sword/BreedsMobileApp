@@ -4,18 +4,18 @@ import ComposableArchitecture
 
 @Suite("Detail Feature - Favorites")
 @MainActor
-struct DetailFeatureTests {
+struct DetailReducerTests {
 
     @Test func favoriteButtonTogglesState() async {
         let breed = MockData.breed1
         let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
 
         let store = TestStore(
-            initialState: DetailFeature.State(
+            initialState: DetailReducer.State(
                 breed: breed,
                 favoriteBreeds: sharedFavorites
             ),
-            reducer: { DetailFeature() }
+            reducer: { DetailReducer() }
         )
 
         // Add to favorites
