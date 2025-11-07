@@ -4,7 +4,7 @@ import ComposableArchitecture
 
 @Suite("Breed List Feature – Favorites")
 @MainActor
-struct BreedListReducerFavoritesTests {
+struct BreedListReducerTests {
 
     @Test
     func togglingBreedAddsToFavorites() async {
