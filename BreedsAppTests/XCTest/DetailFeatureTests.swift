@@ -20,4 +20,54 @@ final class DetailFeatureTests: XCTestCase {
         await store.send(.favoriteButtonTapped)
         XCTAssertFalse(store.state.isFavorite)
     }
+
+    func test_CrossFeatureSync_ToggleFavoriteReflectsInBreedListAndFavoriteList() async {
+        let breed = MockData.breed1
+        let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
+
+        let breedListStore = TestStore(
+                initialState: BreedListFeature.State(
+                    breeds: [breed],
+                    favoriteBreeds: sharedFavorites
+                ),
+                reducer: { BreedListFeature() }
+            )
+
+        let detailStore = TestStore(
+            initialState: DetailFeature.State(
+                breed: breed,
+                favoriteBreeds: sharedFavorites
+            ),
+            reducer: { DetailFeature() }
+        )
+
+        let favoriteStore = TestStore(
+            initialState: FavoriteFeature.State(
+                favoriteBreeds: sharedFavorites
+            )
+        ) {
+            FavoriteFeature()
+        }
+
+        detailStore.exhaustivity = .off(showSkippedAssertions: false)
+
+        // No favorites in any feature
+        XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
+        XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
+        XCTAssertFalse(detailStore.state.isFavorite)
+
+        await detailStore.send(.favoriteButtonTapped)
+
+        // All features reflect the change
+        XCTAssertTrue(detailStore.state.isFavorite)
+        XCTAssertTrue(breedListStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
+        XCTAssertTrue(favoriteStore.state.favoriteBreeds.contains(where: { $0.id == breed.id }))
+
+        await detailStore.send(.favoriteButtonTapped)
+
+        // All features reflect the removal
+        XCTAssertFalse(detailStore.state.isFavorite)
+        XCTAssertTrue(breedListStore.state.favoriteBreeds.isEmpty)
+        XCTAssertTrue(favoriteStore.state.favoriteBreeds.isEmpty)
+    }
 }
