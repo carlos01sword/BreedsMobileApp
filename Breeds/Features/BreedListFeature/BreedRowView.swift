@@ -9,10 +9,9 @@ struct BreedRowView: View {
 
     var body: some View {
         HStack(spacing: .rowSpacing) {
-            Image(systemName: "pawprint.fill")
-                .resizable()
+            ImageCardView(breed:breed)
                 .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
-                .scaledToFit()
+                .scaledToFill()
                 .frame(width: .imageRowFrameSize , height: .imageRowFrameSize)
                 .clipShape(RoundedRectangle(cornerRadius: .imageRowCornerRadius))
 

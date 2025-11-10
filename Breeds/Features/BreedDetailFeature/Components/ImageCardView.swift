@@ -6,6 +6,7 @@ struct ImageCardView: View {
 
     @Dependency(\.imageClient) var imageClient
     @State private var uiImage: UIImage?
+    @State private var isLoading = true
 
     var body: some View {
         Group {
@@ -13,18 +14,22 @@ struct ImageCardView: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
-            } else {
+            } else if isLoading {
                 ProgressView()
-                    .task {
-                        do {
-                            uiImage = try await imageClient.fetchImage(
-                                breed.referenceImageID ?? ""
-                            )
-                        } catch {
-                            print("Failed to fetch image:", error)
-                        }
-                    }
+            } else {
+                Image(systemName: "pawprint.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.gray.opacity(0.6))
+                }
+        }
+        .task {
+            do {
+                uiImage = try await imageClient.fetchImage(breed.referenceImageID ?? "")
+            } catch {
+                print("Failed to fetch image:", error)
             }
+            isLoading = false
         }
     }
 }
