@@ -25,7 +25,10 @@ struct BreedListView: View {
                                 isFavorite: store.state.isFavorite(breed),
                                 onFavoriteTapped: {
                                     store.send(.breedFavoriteToggled(id: breed.id))
-                                }
+                                },
+                                fetchImage: { store.send(.fetchImage(id: breed.id)) },
+                                image: breed.image,
+                                isLoading: breed.isLoadingImage
                             )
                         }
                     }

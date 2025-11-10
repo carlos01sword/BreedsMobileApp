@@ -6,10 +6,13 @@ struct BreedRowView: View {
     var breed: Breed
     var isFavorite: Bool
     var onFavoriteTapped: () -> Void
-
+    var fetchImage: () -> Void
+    var image: UIImage?
+    var isLoading: Bool
     var body: some View {
         HStack(spacing: .rowSpacing) {
-            ImageCardView(breed:breed)
+
+            ImageCardView(image: image, isLoading: isLoading, fetchImage: fetchImage)
                 .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
                 .scaledToFill()
                 .frame(width: .imageRowFrameSize , height: .imageRowFrameSize)
@@ -50,7 +53,10 @@ private extension CGFloat {
         isFavorite: isFavorite,
         onFavoriteTapped: {
             isFavorite.toggle()
-        }
+        },
+        fetchImage: {},
+        image: nil,
+        isLoading: false
     )
     .padding()
 }

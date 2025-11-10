@@ -14,8 +14,12 @@ struct DetailView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    ImageCardView(breed: store.breed)
-                        .cardImageStyle()
+                    ImageCardView(
+                        image: store.image,
+                        isLoading: store.isLoadingImage,
+                        fetchImage: { store.send(.fetchImage) }
+                    )
+                    .cardImageStyle()
 
                     InfoCardView(breed: store.breed)
 

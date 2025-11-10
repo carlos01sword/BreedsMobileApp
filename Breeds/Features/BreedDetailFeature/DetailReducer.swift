@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import Foundation
+import SwiftUI
 
 @Reducer
 struct DetailReducer {
@@ -7,6 +7,8 @@ struct DetailReducer {
     struct State: Equatable {
         let breed: Breed
         var isFavorite: Bool { favoriteBreeds.contains(where: { $0.id == breed.id }) }
+        var image: UIImage?
+        var isLoadingImage = false
 
         @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
@@ -17,9 +19,13 @@ struct DetailReducer {
         }
     }
 
-    enum Action {
+    enum Action: Equatable {
         case favoriteButtonTapped
+        case fetchImage
+        case imageResponse(TaskResult<UIImage>)
     }
+
+    @Dependency(\.imageClient) var imageClient
 
     var body: some Reducer<State,Action>{
         Reduce {state,action in
@@ -29,10 +35,32 @@ struct DetailReducer {
                     if state.isFavorite {
                         _ = favorites.remove(id: state.breed.id)
                         return
-                    } 
+                    }
                     _ = favorites.append(state.breed)
-                    
                 }
+                return .none
+
+            case .fetchImage:
+                guard !state.isLoadingImage, state.image == nil, let referenceID = state.breed.referenceImageID else {
+                    return .none
+                }
+
+                state.isLoadingImage = true
+                return .run { [referenceID] send in
+                    await send(.imageResponse(
+                        TaskResult {
+                        try await imageClient.fetchImage(referenceID)
+                    }))
+                }
+
+            case .imageResponse(.success(let image)):
+                state.image = image
+                state.isLoadingImage = false
+                return .none
+
+            case .imageResponse(.failure):
+                state.image = nil
+                state.isLoadingImage = false
                 return .none
             }
         }

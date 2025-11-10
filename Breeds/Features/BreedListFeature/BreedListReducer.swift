@@ -30,10 +30,13 @@ struct BreedListReducer {
         case breedTapped(Breed)
         case dismissDetail
         case detail(DetailReducer.Action)
+        case fetchImage(id: Breed.ID)
+        case imageResponse(id: Breed.ID, TaskResult<UIImage>)
     }
 
     @Dependency(\.breedsClient) var breedsClient
- 
+    @Dependency(\.imageClient) var imageClient
+
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -85,6 +88,41 @@ struct BreedListReducer {
 
             case .detail:
                 return .none
+
+            case .fetchImage(let id):
+                guard let index = state.breeds.firstIndex(where: { $0.id == id }) else {
+                    return .none
+                }
+                guard state.breeds[index].image == nil, !state.breeds[index].isLoadingImage else {
+                    return .none
+                }
+                guard let referenceImageID = state.breeds[index].referenceImageID else {
+                    return .none
+                }
+
+                state.breeds[index].isLoadingImage = true
+
+                return .run { [referenceImageID] send in
+                    await send(.imageResponse(id: id, TaskResult {
+                        try await imageClient.fetchImage(referenceImageID)
+                    }))
+                }
+
+            case .imageResponse(let id, let result):
+                guard let index = state.breeds.firstIndex(where: { $0.id == id }) else {
+                    return .none
+                }
+                state.breeds[index].isLoadingImage = false
+
+                switch result {
+                case .success(let image):
+                    state.breeds[index].image = image
+
+                case .failure:
+                    state.breeds[index].image = nil
+                }
+                return .none
+
             }
         }
         .ifLet(\.detail, action: \.detail) { DetailReducer() }
