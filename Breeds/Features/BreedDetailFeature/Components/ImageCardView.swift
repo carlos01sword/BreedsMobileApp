@@ -1,35 +1,29 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct ImageCardView: View {
     let breed: Breed
 
-    private var url: URL? {
-        guard let id = breed.referenceImageID, !id.isEmpty else { return nil }
-        return URL(string: "https://cdn2.thecatapi.com/images/\(id).jpg")
-    }
+    @Dependency(\.imageClient) var imageClient
+    @State private var uiImage: UIImage?
 
     var body: some View {
-
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-
-            case .success(let image):
-                image
+        Group {
+            if let uiImage {
+                Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
-                    .cardImageStyle()
-
-            case .failure:
-                Image(systemName: "pawprint.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
-                    .cardImageStyle()
-
-            @unknown default:
-                EmptyView()
+            } else {
+                ProgressView()
+                    .task {
+                        do {
+                            uiImage = try await imageClient.fetchImage(
+                                breed.referenceImageID ?? ""
+                            )
+                        } catch {
+                            print("Failed to fetch image:", error)
+                        }
+                    }
             }
         }
     }
@@ -38,5 +32,6 @@ struct ImageCardView: View {
 #if DEBUG
     #Preview {
         ImageCardView(breed: MockData.sampleBreed)
+            .frame(width: 300, height: 300)
     }
 #endif

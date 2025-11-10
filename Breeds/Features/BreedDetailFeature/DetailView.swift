@@ -15,6 +15,7 @@ struct DetailView: View {
                         .fontWeight(.bold)
 
                     ImageCardView(breed: store.breed)
+                        .cardImageStyle()
 
                     InfoCardView(breed: store.breed)
 
