@@ -3,7 +3,7 @@ import SwiftUI
 
 struct DetailView: View {
 
-    @Bindable var store: StoreOf<DetailFeature>
+    @Bindable var store: StoreOf<DetailReducer>
 
     var body: some View{
         NavigationStack{
@@ -37,9 +37,9 @@ struct DetailView: View {
 #Preview{
     @Previewable @State var isFavorite: Bool = false
     DetailView(
-        store: StoreOf<DetailFeature>(
-            initialState: DetailFeature.State(breed: MockData.sampleBreed),
-            reducer: { DetailFeature() }
+        store: StoreOf<DetailReducer>(
+            initialState: DetailReducer.State(breed: MockData.sampleBreed),
+            reducer: { DetailReducer() }
         )
     )
 }

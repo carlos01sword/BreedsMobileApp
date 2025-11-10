@@ -2,8 +2,8 @@ import ComposableArchitecture
 import SwiftUI
 
 struct BreedListView: View {
-    @Bindable var store: StoreOf<BreedListFeature>
-    
+    @Bindable var store: StoreOf<BreedListReducer>
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -57,8 +57,8 @@ struct BreedListView: View {
 #if DEBUG
 #Preview {
         BreedListView(
-            store: Store(initialState: BreedListFeature.State()) {
-                BreedListFeature()
+            store: Store(initialState: BreedListReducer.State()) {
+                BreedListReducer()
             }
         )
     }

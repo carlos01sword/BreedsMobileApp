@@ -24,8 +24,8 @@ enum MockData {
     static func makeState(
         breeds: [Breed] = [],
         favorites: [Breed] = []
-    ) -> BreedListFeature.State {
-        var state = BreedListFeature.State()
+    ) -> BreedListReducer.State {
+        var state = BreedListReducer.State()
         state.breeds = IdentifiedArray(uniqueElements: breeds)
         state.$favoriteBreeds.withLock { $0 = IdentifiedArray(uniqueElements: favorites) }
         return state

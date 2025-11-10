@@ -1,15 +1,16 @@
-import XCTest
+import Testing
 import ComposableArchitecture
 @testable import Breeds
 
+@Suite("Breed List Feature – Network Service")
 @MainActor
-final class BreedListNetworkServiceTests: XCTestCase {
+struct NetworkServiceTests{
 
-    func testFetchBreedsSuccess() async {
+    @Test func fetchBreedsSuccess() async {
         let mockBreeds = [MockData.breed1, MockData.breed2]
         
-        let store = TestStore(initialState: BreedListFeature.State()) {
-            BreedListFeature()
+        let store = TestStore(initialState: BreedListReducer.State()) {
+            BreedListReducer()
         }
         
         store.dependencies.breedsClient.fetchBreeds = { mockBreeds }
