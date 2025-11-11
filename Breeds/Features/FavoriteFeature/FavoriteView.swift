@@ -6,20 +6,25 @@ struct FavoriteView: View {
 
     var body: some View {
         NavigationStack {
-            if store.breeds.isEmpty {
+            if store.favoriteBreeds.isEmpty {
                 FavoriteEmptyStateView()
             }
             else {
                 ScrollView {
-                    ForEachStore(
-                        self.store.scope(state: \.breeds, action: \.breeds)
-                    ) { breedStore in
-                        let breed = breedStore.state.breed
-                        Button {
-                            store.send(.breedTapped(breed))
-                        } label: {
-                            BreedRowView(store: breedStore)
+                    LazyVStack {
+                        ForEach(store.favoriteBreeds) { breed in
+                            Button {
+                                store.send(.breedTapped(breed))
+                            } label: {
+                                BreedRowView(
+                                    store: Store(
+                                        initialState: BreedCellReducer.State(breed: breed),
+                                        reducer: { BreedCellReducer() }
+                                    )
+                                )
+                            }
                         }
+
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal)
@@ -28,7 +33,7 @@ struct FavoriteView: View {
                 .navigationTitle("⭐ Favorites")
                 .navigationDestination(
                     item: Binding(
-                        get: { store.detail?.breed },
+                        get: { store.detail?.cell.breed },
                         set: { _ in store.send(.dismissDetail) }
                     )
                 ) { _ in
@@ -38,12 +43,8 @@ struct FavoriteView: View {
                 }
             }
         }
-        .onAppear {
-            store.send(.onAppear)
-        }
     }
 }
-
 
 #if DEBUG
     #Preview {

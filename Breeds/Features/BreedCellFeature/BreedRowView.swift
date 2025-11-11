@@ -3,7 +3,7 @@ import SwiftUI
 
 struct BreedRowView: View {
 
-    let store: StoreOf<DetailReducer>
+    let store: StoreOf<BreedCellReducer>
 
     var body: some View {
         HStack(spacing: .rowSpacing) {
@@ -44,8 +44,8 @@ private extension CGFloat {
 #Preview("Interactive Favorite Toggle") {
     BreedRowView(
         store: Store(
-            initialState: DetailReducer.State(breed: MockData.sampleBreed),
-            reducer: { DetailReducer() }
+            initialState: BreedCellReducer.State(breed: MockData.sampleBreed),
+            reducer: { BreedCellReducer() }
         )
     )
     .padding()

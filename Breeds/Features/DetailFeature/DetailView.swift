@@ -10,23 +10,23 @@ struct DetailView: View {
             ScrollView {
                 VStack(spacing: ConstantsUI.largeVerticalSpacing) {
 
-                    Text(store.breed.name)
+                    Text(store.cell.breed.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
                     ImageCardView(
-                        image: store.image,
-                        isLoading: store.isLoadingImage,
-                        fetchImage: { store.send(.fetchImage) }
+                        image: store.cell.image,
+                        isLoading: store.cell.isLoadingImage,
+                        fetchImage: { store.send(.cell(.fetchImage)) }
                     )
                     .cardImageStyle()
 
-                    InfoCardView(breed: store.breed)
+                    InfoCardView(breed: store.cell.breed)
 
                     Button {
-                        store.send(.favoriteButtonTapped)
+                        store.send(.cell(.favoriteButtonTapped))
                     } label: {
-                        Text(store.isFavorite ? "Remove from Favorites" : "Add to Favorites")
+                        Text(store.cell.isFavorite ? "Remove from Favorites" : "Add to Favorites")
                             .favoritesButtonStyle()
                     }
                 }
@@ -40,10 +40,11 @@ struct DetailView: View {
 
 #if DEBUG
 #Preview{
-    @Previewable @State var isFavorite: Bool = false
     DetailView(
         store: StoreOf<DetailReducer>(
-            initialState: DetailReducer.State(breed: MockData.sampleBreed),
+            initialState: DetailReducer.State(
+                cell: BreedCellReducer.State(breed: MockData.sampleBreed)
+            ),
             reducer: { DetailReducer() }
         )
     )

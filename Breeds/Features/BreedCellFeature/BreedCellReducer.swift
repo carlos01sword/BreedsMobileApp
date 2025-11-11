@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 @Reducer
-struct DetailReducer {
+struct BreedCellReducer {
     @ObservableState
     struct State: Equatable, Identifiable {
         let breed: Breed
@@ -18,7 +18,14 @@ struct DetailReducer {
         init(breed: Breed, favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
             self._favoriteBreeds = favoriteBreeds
             self.breed = breed
+
+            if let id = breed.referenceImageID,
+                   let cachedImage = ImageCacheActor.shared.image(for: id) {
+                    self.image = cachedImage
+                }
         }
+
+        
     }
 
     enum Action: Equatable {

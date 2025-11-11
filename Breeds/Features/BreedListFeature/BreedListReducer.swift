@@ -6,7 +6,7 @@ struct BreedListReducer {
 
     @ObservableState
     struct State: Equatable {
-        var breeds: IdentifiedArrayOf<DetailReducer.State> = []
+        var breeds: IdentifiedArrayOf<BreedCellReducer.State> = []
         var isLoading: Bool = false
         var errorMessage: String?
         var detail: DetailReducer.State?
@@ -19,7 +19,7 @@ struct BreedListReducer {
         @Shared(.favoriteBreeds) var favoriteBreeds
 
         init(
-            breeds: IdentifiedArrayOf<DetailReducer.State> = [],
+            breeds: IdentifiedArrayOf<BreedCellReducer.State> = [],
             favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)
         ) {
             self.breeds = breeds
@@ -33,7 +33,7 @@ struct BreedListReducer {
         case breedsResponse(TaskResult<[Breed]>)
         case breedTapped(Breed)
         case dismissDetail
-        case breeds(IdentifiedAction<Breed.ID, DetailReducer.Action>)
+        case breeds(IdentifiedAction<Breed.ID, BreedCellReducer.Action>)
         case detail(DetailReducer.Action)
         case alert(PresentationAction<Alert>)
 
@@ -85,10 +85,10 @@ struct BreedListReducer {
 
                 if state.currentPage == 0 {
                     state.breeds = IdentifiedArray(
-                        uniqueElements: breeds.map { DetailReducer.State(breed: $0) }
+                        uniqueElements: breeds.map { BreedCellReducer.State(breed: $0) }
                     )
                 } else {
-                    let newItems = breeds.map { DetailReducer.State(breed: $0) }
+                    let newItems = breeds.map { BreedCellReducer.State(breed: $0) }
                     state.breeds.append(contentsOf: newItems)
                 }
 
@@ -112,7 +112,10 @@ struct BreedListReducer {
                 return .none
 
             case .breedTapped(let breed):
-                state.detail = state.breeds[id: breed.id] ?? DetailReducer.State(breed: breed)
+                guard let existingCellState = state.breeds[id: breed.id] else {
+                    return .none
+                }
+                state.detail = DetailReducer.State(cell: existingCellState)
                 return .none
 
             case .dismissDetail:
@@ -126,7 +129,7 @@ struct BreedListReducer {
                 return .none
             }
         }
-        .forEach(\.breeds, action: \.breeds) { DetailReducer() }
+        .forEach(\.breeds, action: \.breeds) { BreedCellReducer() }
         .ifLet(\.detail, action: \.detail) { DetailReducer() }
         .ifLet(\.alert, action: \.alert)
     }

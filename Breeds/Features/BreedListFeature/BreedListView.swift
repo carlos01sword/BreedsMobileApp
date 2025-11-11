@@ -51,7 +51,7 @@ struct BreedListView: View {
             }
             .navigationDestination(
                 item: Binding(
-                    get: { store.detail?.breed },
+                    get: { store.detail?.cell.breed },
                     set: { _ in store.send(.dismissDetail) }
                 )
             ) { _ in
