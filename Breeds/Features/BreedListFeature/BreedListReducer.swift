@@ -28,19 +28,18 @@ struct BreedListReducer {
     }
 
     enum Action: Equatable {
-        case fetchBreeds
-        case loadMore
+        case alert(PresentationAction<Alert>)
+        case breeds(IdentifiedAction<Breed.ID, BreedCellReducer.Action>)
         case breedsResponse(TaskResult<[Breed]>)
         case breedTapped(Breed)
-        case dismissDetail
-        case breeds(IdentifiedAction<Breed.ID, BreedCellReducer.Action>)
         case detail(DetailReducer.Action)
-        case alert(PresentationAction<Alert>)
+        case dismissDetail
+        case fetchBreeds
+        case loadMore
 
         @CasePathable
         enum Alert: Equatable{}
     }
-
 
     @Dependency(\.breedsClient) var breedsClient
 

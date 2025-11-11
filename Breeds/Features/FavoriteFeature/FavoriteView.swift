@@ -24,7 +24,6 @@ struct FavoriteView: View {
                                 )
                             }
                         }
-
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal)
