@@ -4,11 +4,13 @@ import SwiftUI
 @Reducer
 struct DetailReducer {
     @ObservableState
-    struct State: Equatable {
+    struct State: Equatable, Identifiable {
         let breed: Breed
         var isFavorite: Bool { favoriteBreeds.contains(where: { $0.id == breed.id }) }
         var image: UIImage?
         var isLoadingImage = false
+
+        nonisolated var id: String { breed.id }
 
         @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
@@ -41,7 +43,7 @@ struct DetailReducer {
                 return .none
 
             case .fetchImage:
-                guard !state.isLoadingImage, state.image == nil, let referenceID = state.breed.referenceImageID else {
+                guard !state.isLoadingImage, let referenceID = state.breed.referenceImageID else {
                     return .none
                 }
 
@@ -59,7 +61,6 @@ struct DetailReducer {
                 return .none
 
             case .imageResponse(.failure):
-                state.image = nil
                 state.isLoadingImage = false
                 return .none
             }

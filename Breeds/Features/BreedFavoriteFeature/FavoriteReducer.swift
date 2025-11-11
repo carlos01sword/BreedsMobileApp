@@ -1,12 +1,13 @@
 import ComposableArchitecture
 import SwiftUI
+internal import Combine
 
 @Reducer
 struct FavoriteReducer {
 
     @ObservableState
     struct State: Equatable {
-        var favorites: IdentifiedArrayOf<Breed> { favoriteBreeds }
+        var breeds: IdentifiedArrayOf<DetailReducer.State> = []
         var detail: DetailReducer.State?
 
         @ObservationStateIgnored
@@ -14,80 +15,60 @@ struct FavoriteReducer {
 
         init(favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
             self._favoriteBreeds = favoriteBreeds
+            self.breeds = IdentifiedArray(
+                uniqueElements: self.favoriteBreeds.map { DetailReducer.State(breed: $0) }
+            )
         }
     }
 
     enum Action: Equatable {
-        case breedFavoriteToggled(id: Breed.ID)
+        case onAppear
         case breedTapped(Breed)
         case dismissDetail
+        case favoritesChanged(IdentifiedArrayOf<Breed>)
+        case breeds(IdentifiedAction<Breed.ID, DetailReducer.Action>)
         case detail(DetailReducer.Action)
-        case fetchImage(id: Breed.ID)
-        case imageResponse(id: Breed.ID, TaskResult<UIImage>)
     }
-
-    @Dependency(\.imageClient) var imageClient
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .breedFavoriteToggled(let id):
-                _ = state.$favoriteBreeds.withLock { $0.remove(id: id) }
-                return .none
+
+            case .onAppear:
+                return .run { [sharedBreeds = state.$favoriteBreeds] send in
+                    for await favorites in sharedBreeds.publisher.values {
+                        await send(.favoritesChanged(favorites))
+                    }
+                }
 
             case .breedTapped(let breed):
-                state.detail = DetailReducer.State(breed: breed)
+                if let existingState = state.breeds[id: breed.id] {
+                    state.detail = existingState
+                }
                 return .none
-                
+
             case .dismissDetail:
                 state.detail = nil
                 return .none
 
-            case .detail(let detailAction):
-                switch detailAction {
-                case .favoriteButtonTapped:
-                    if state.favoriteBreeds.isEmpty { state.detail = nil }
-                    return .none
-                case .fetchImage:
-                    return .none
-                case .imageResponse:
-                    return .none
-                }
-
-            case .fetchImage(let id):
-                guard let index = state.favoriteBreeds.firstIndex(where: { $0.id == id }) else {
-                    return .none
-                }
-                let breed = state.favoriteBreeds[index]
-                guard breed.image == nil, !breed.isLoadingImage else {
-                    return .none
-                }
-                guard let referenceID = breed.referenceImageID else {
-                    return .none
-                }
-                state.$favoriteBreeds.withLock { favorites in
-                    favorites[index].isLoadingImage = true
-                }
-                return .run { [referenceID] send in
-                    await send(.imageResponse(id: id, TaskResult {
-                        try await imageClient.fetchImage(referenceID)
-                    }))
-                }
-
-            case .imageResponse(let id, let result):
-                guard let index = state.favoriteBreeds.firstIndex(where: { $0.id == id }) else { return .none }
-                state.$favoriteBreeds.withLock { favorites in
-                    favorites[index].isLoadingImage = false
-                    switch result {
-                    case .success(let image): favorites[index].image = image
-                    case .failure: favorites[index].image = nil
+            case .favoritesChanged(let favorites):
+                state.breeds = IdentifiedArray(
+                    uniqueElements: favorites.map { breed in
+                        state.breeds[id: breed.id] ?? DetailReducer.State(breed: breed)
                     }
+                )
+
+                if let detailBreed = state.detail?.breed,
+                   !favorites.contains(where: { $0.id == detailBreed.id }) {
+                    state.detail = nil
                 }
+                return .none
+
+            case .detail, .breeds:
                 return .none
             }
         }
-        .ifLet(\.detail, action: \.detail){
-            DetailReducer()
-        }
+        .forEach(\.breeds, action: \.breeds) { DetailReducer() }
+        .ifLet(\.detail, action: \.detail) { DetailReducer() }
     }
 }

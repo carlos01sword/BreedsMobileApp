@@ -6,23 +6,19 @@ struct FavoriteView: View {
 
     var body: some View {
         NavigationStack {
-            if store.favorites.isEmpty{
+            if store.breeds.isEmpty {
                 FavoriteEmptyStateView()
             }
             else {
                 ScrollView {
-                    ForEach(store.favorites) { breed in
+                    ForEachStore(
+                        self.store.scope(state: \.breeds, action: \.breeds)
+                    ) { breedStore in
+                        let breed = breedStore.state.breed
                         Button {
                             store.send(.breedTapped(breed))
                         } label: {
-                            BreedRowView(
-                                breed: breed,
-                                isFavorite: true,
-                                onFavoriteTapped: { store.send(.breedFavoriteToggled(id: breed.id)) },
-                                fetchImage: { store.send(.fetchImage(id: breed.id)) },
-                                image: breed.image,
-                                isLoading: breed.isLoadingImage
-                            )
+                            BreedRowView(store: breedStore)
                         }
                     }
                     .contentShape(Rectangle())
@@ -41,6 +37,9 @@ struct FavoriteView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            store.send(.onAppear)
         }
     }
 }

@@ -3,28 +3,24 @@ import SwiftUI
 
 struct BreedRowView: View {
 
-    var breed: Breed
-    var isFavorite: Bool
-    var onFavoriteTapped: () -> Void
-    var fetchImage: () -> Void
-    var image: UIImage?
-    var isLoading: Bool
+    let store: StoreOf<DetailReducer>
+
     var body: some View {
         HStack(spacing: .rowSpacing) {
 
-            ImageCardView(image: image, isLoading: isLoading, fetchImage: fetchImage)
+            ImageCardView(image: store.image, isLoading: store.isLoadingImage,fetchImage: { store.send(.fetchImage) } )
                 .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
                 .scaledToFill()
                 .frame(width: .imageRowFrameSize , height: .imageRowFrameSize)
                 .clipShape(RoundedRectangle(cornerRadius: .imageRowCornerRadius))
 
-            Text(breed.name)
+            Text(store.breed.name)
                 .font(.headline)
                 .foregroundColor(.primary)
 
             Spacer()
-            Button(action: onFavoriteTapped){
-                Image(systemName: isFavorite ? "star.fill" : "star")
+            Button(action: { store.send(.favoriteButtonTapped) }){
+                Image(systemName: store.isFavorite ? "star.fill" : "star")
                     .foregroundColor(.yellow)
             }
         }
@@ -46,17 +42,11 @@ private extension CGFloat {
 
 #if DEBUG
 #Preview("Interactive Favorite Toggle") {
-  @Previewable @State var isFavorite: Bool = false
-
     BreedRowView(
-        breed: MockData.sampleBreed,
-        isFavorite: isFavorite,
-        onFavoriteTapped: {
-            isFavorite.toggle()
-        },
-        fetchImage: {},
-        image: nil,
-        isLoading: false
+        store: Store(
+            initialState: DetailReducer.State(breed: MockData.sampleBreed),
+            reducer: { DetailReducer() }
+        )
     )
     .padding()
 }

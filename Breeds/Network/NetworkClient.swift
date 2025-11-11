@@ -18,11 +18,13 @@ enum NetworkError: Error, CustomStringConvertible {
 
 struct Endpoint {
     let path: String
+    var queryItems: [URLQueryItem] = []
     var fetchBreedsUrl: URL? {
         var components = URLComponents()
         components.scheme = "https"
         components.host = Environment.urlHost
         components.path = "/v1" + path
+        components.queryItems = queryItems
         return components.url
     }
     var fetchImageUrl: URL? {
@@ -35,8 +37,14 @@ struct Endpoint {
 }
 
 extension Endpoint {
-    static var breeds: Endpoint {
-        Endpoint(path: Environment.urlPath)
+    static func breeds(limit: Int = 10, page: Int = 0) -> Endpoint {
+        Endpoint(
+            path: Environment.urlPath,
+            queryItems: [
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "page", value: "\(page)")
+            ]
+        )
     }
 
     static func image(id: String) -> Endpoint {
