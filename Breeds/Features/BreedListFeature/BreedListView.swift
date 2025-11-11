@@ -7,13 +7,13 @@ struct BreedListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if let errorMessage = store.errorMessage {
+                if store.breeds.isEmpty && store.isLoading {
+                    ProgressView("Loading breeds...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                } else if store.breeds.isEmpty, let errorMessage = store.errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .padding()
-                } else if store.breeds.isEmpty && store.isLoading {
-                    ProgressView("Loading breeds...")
-                        .progressViewStyle(CircularProgressViewStyle())
                 } else {
                     ScrollView {
                         LazyVStack {
@@ -59,6 +59,7 @@ struct BreedListView: View {
                     DetailView(store: detailStore)
                 }
             }
+            .alert($store.scope(state: \.alert, action: \.alert))
         }
     }
 }

@@ -13,6 +13,8 @@ struct BreedListReducer {
         var currentPage: Int = 0
         var canLoadMore: Bool = true
 
+        @Presents var alert: AlertState<Action.Alert>?
+
         @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
 
@@ -33,6 +35,10 @@ struct BreedListReducer {
         case dismissDetail
         case breeds(IdentifiedAction<Breed.ID, DetailReducer.Action>)
         case detail(DetailReducer.Action)
+        case alert(PresentationAction<Alert>)
+
+        @CasePathable
+        enum Alert: Equatable{}
     }
 
 
@@ -46,6 +52,7 @@ struct BreedListReducer {
                 state.isLoading = true
                 state.errorMessage = nil
                 state.currentPage = 0
+                state.canLoadMore = true
                 return .run { send in
                     do {
                         let breeds = try await breedsClient.fetchBreeds(0, 10)
@@ -58,6 +65,7 @@ struct BreedListReducer {
             case .loadMore:
                 guard !state.isLoading, state.canLoadMore else { return .none }
                 state.isLoading = true
+                state.errorMessage = nil
                 let nextPage = state.currentPage + 1
                 return .run { send in
                     do {
@@ -89,7 +97,18 @@ struct BreedListReducer {
 
             case .breedsResponse(.failure(let error)):
                 state.isLoading = false
-                state.errorMessage = (error as? NetworkError)?.description ?? error.localizedDescription
+                let errorDescription = (error as? NetworkError)?.description ?? error.localizedDescription
+
+                if state.breeds.isEmpty {
+                    state.errorMessage = errorDescription
+                } else {
+                    state.canLoadMore = false
+                    state.alert = AlertState {
+                        TextState("Network Error")
+                    } message: {
+                        TextState("Could not load more breeds. Please check your connection.")
+                    }
+                }
                 return .none
 
             case .breedTapped(let breed):
@@ -100,11 +119,15 @@ struct BreedListReducer {
                 state.detail = nil
                 return .none
 
+            case .alert:
+                return .none
+
             case .breeds, .detail:
                 return .none
             }
         }
         .forEach(\.breeds, action: \.breeds) { DetailReducer() }
         .ifLet(\.detail, action: \.detail) { DetailReducer() }
+        .ifLet(\.alert, action: \.alert)
     }
 }
