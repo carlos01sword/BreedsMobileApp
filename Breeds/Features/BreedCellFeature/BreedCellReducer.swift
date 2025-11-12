@@ -20,7 +20,7 @@ struct BreedCellReducer {
             self.breed = breed
 
             if let id = breed.referenceImageID,
-                   let cachedImage = ImageCacheActor.inMemoryImage(for: id) {
+               let cachedImage = ImageCache.getCachedImage(for: id) {
                     self.image = cachedImage
                 }
         }
@@ -54,10 +54,11 @@ struct BreedCellReducer {
 
                 state.isLoadingImage = true
                 return .run { [referenceID] send in
-                    await send(.imageResponse(
-                        TaskResult {
-                        try await imageClient.fetchImage(referenceID)
-                    }))
+                    await send(
+                        .imageResponse(
+                            TaskResult { try await imageClient.fetchImage(referenceID) }
+                        )
+                    )
                 }
 
             case .imageResponse(.success(let image)):

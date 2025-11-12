@@ -8,11 +8,10 @@ struct ImageClient {
 extension ImageClient: DependencyKey {
     static let liveValue = ImageClient { id in
 
-        if let cachedImage = await ImageCacheActor.shared.image(for: id) {
+        if let cachedImage = await ImageCache.getCachedImage(for: id) {
             return cachedImage
         }
 
-        // If no cache, fetch from network
         do {
             let endpoint = await Endpoint.image(id: id)
             let data = try await NetworkClient.fetch(endpoint, isImage: true)
@@ -31,8 +30,7 @@ extension ImageClient: DependencyKey {
                 throw NetworkError.decoding(NSError(domain: "InvalidImage", code: -1))
             }
 
-            // Save image to the cache via the actor
-            await ImageCacheActor.shared.setImage(image, data: imageData, for: id)
+            await ImageCache.setCachedImage(image, data: imageData, for: id)
 
             return image
 
