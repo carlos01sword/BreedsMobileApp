@@ -21,11 +21,7 @@ enum MockData {
     static let breed2 = MockData.makeBreed(id: "2")
     static let favoritedBreed1 = MockData.makeBreed(id: "1")
 
-    static func makeState(
-        breeds: [Breed] = [],
-        favorites: [Breed] = []
-    ) -> BreedListReducer.State {
-
+    static func makeState(breeds: [Breed] = [],favorites: [Breed] = []) -> BreedListReducer.State {
         let sharedFavorites = Shared(value: IdentifiedArray(uniqueElements: favorites))
         var state = BreedListReducer.State(favoriteBreeds: sharedFavorites)
         let cellStates = breeds.map {
