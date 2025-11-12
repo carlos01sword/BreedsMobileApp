@@ -4,7 +4,7 @@ import SwiftUI
 
 
 enum MockData {
-    
+
     static func makeBreed(id: String) -> Breed {
         return Breed(
             id: id,
@@ -13,10 +13,10 @@ enum MockData {
             temperament: "Temperament \(id)",
             description: "Description \(id)",
             lifeSpan: "12-15",
-            referenceImageID: nil
+            referenceImageID: "0XYvRd7oD"
         )
     }
-    
+
     static let breed1 = MockData.makeBreed(id: "1")
     static let breed2 = MockData.makeBreed(id: "2")
     static let favoritedBreed1 = MockData.makeBreed(id: "1")
@@ -25,9 +25,14 @@ enum MockData {
         breeds: [Breed] = [],
         favorites: [Breed] = []
     ) -> BreedListReducer.State {
-        var state = BreedListReducer.State()
-        state.breeds = IdentifiedArray(uniqueElements: breeds)
-        state.$favoriteBreeds.withLock { $0 = IdentifiedArray(uniqueElements: favorites) }
+
+        let sharedFavorites = Shared(value: IdentifiedArray(uniqueElements: favorites))
+        var state = BreedListReducer.State(favoriteBreeds: sharedFavorites)
+        let cellStates = breeds.map {
+            BreedCellReducer.State(breed: $0, favoriteBreeds: sharedFavorites)
+        }
+
+        state.breeds = IdentifiedArray(uniqueElements: cellStates)
         return state
     }
 }
