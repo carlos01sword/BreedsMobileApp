@@ -52,42 +52,26 @@ struct BreedListReducer {
                 state.errorMessage = nil
                 state.currentPage = 0
                 state.canLoadMore = true
-                return .run { send in
-                    do {
-                        let breeds = try await breedsClient.fetchBreeds(0, 10)
-                        await send(.breedsResponse(.success(breeds)))
-                    } catch {
-                        await send(.breedsResponse(.failure(error)))
-                    }
-                }
+
+                return fetchBreeds(page: 0)
 
             case .loadMore:
                 guard !state.isLoading, state.canLoadMore else { return .none }
                 state.isLoading = true
                 state.errorMessage = nil
                 let nextPage = state.currentPage + 1
-                return .run { send in
-                    do {
-                        let breeds = try await breedsClient.fetchBreeds(nextPage, 10)
-                        await send(.breedsResponse(.success(breeds)))
-                    } catch {
-                        await send(.breedsResponse(.failure(error)))
-                    }
-                }
+
+                return fetchBreeds(page: nextPage)
 
             case .breedsResponse(.success(let breeds)):
                 state.isLoading = false
-                if breeds.isEmpty {
-                    state.canLoadMore = false
-                    return .none
-                }
+                state.canLoadMore = !breeds.isEmpty
+
+                let newItems = breeds.map {BreedCellReducer.State(breed: $0)}
 
                 if state.currentPage == 0 {
-                    state.breeds = IdentifiedArray(
-                        uniqueElements: breeds.map { BreedCellReducer.State(breed: $0) }
-                    )
+                    state.breeds = IdentifiedArray( uniqueElements: newItems )
                 } else {
-                    let newItems = breeds.map { BreedCellReducer.State(breed: $0) }
                     state.breeds.append(contentsOf: newItems)
                 }
 
@@ -100,13 +84,14 @@ struct BreedListReducer {
 
                 if state.breeds.isEmpty {
                     state.errorMessage = errorDescription
-                } else {
-                    state.canLoadMore = false
-                    state.alert = AlertState {
-                        TextState("Network Error")
-                    } message: {
-                        TextState("Could not load more breeds. Please check your connection.")
-                    }
+                    return .none
+                }
+
+                state.canLoadMore = false
+                state.alert = AlertState {
+                    TextState("Network Error")
+                } message: {
+                    TextState("Could not load more breeds. Please check your connection.")
                 }
                 return .none
 
@@ -131,5 +116,16 @@ struct BreedListReducer {
         .forEach(\.breeds, action: \.breeds) { BreedCellReducer() }
         .ifLet(\.detail, action: \.detail) { DetailReducer() }
         .ifLet(\.alert, action: \.alert)
+    }
+
+    private func fetchBreeds(page: Int) -> Effect<Action> {
+        .run { send in
+            do {
+                let breeds = try await breedsClient.fetchBreeds(page,10)
+                await send(.breedsResponse(.success(breeds)))
+            } catch {
+                await send(.breedsResponse(.failure(error)))
+            }
+        }
     }
 }

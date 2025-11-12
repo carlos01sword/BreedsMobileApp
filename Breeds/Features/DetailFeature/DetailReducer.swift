@@ -11,9 +11,7 @@ struct DetailReducer {
     enum Action: Equatable {
         case cell(BreedCellReducer.Action)
     }
-    
-    @Dependency(\.imageClient) var imageClient
-    
+        
     var body: some Reducer<State,Action>{
         Scope(state: \.cell, action: \.cell){
             BreedCellReducer()
