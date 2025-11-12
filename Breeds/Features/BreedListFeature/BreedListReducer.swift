@@ -120,12 +120,11 @@ struct BreedListReducer {
 
     private func fetchBreeds(page: Int) -> Effect<Action> {
         .run { send in
-            do {
-                let breeds = try await breedsClient.fetchBreeds(page,10)
-                await send(.breedsResponse(.success(breeds)))
-            } catch {
-                await send(.breedsResponse(.failure(error)))
-            }
+            await send (
+                .breedsResponse(
+                    TaskResult { try await breedsClient.fetchBreeds(page,10) }
+                )
+            )
         }
     }
 }
