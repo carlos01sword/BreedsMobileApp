@@ -20,12 +20,10 @@ struct BreedCellReducer {
             self.breed = breed
 
             if let id = breed.referenceImageID,
-                   let cachedImage = ImageCacheActor.shared.image(for: id) {
+                   let cachedImage = ImageCacheActor.inMemoryImage(for: id) {
                     self.image = cachedImage
                 }
         }
-
-        
     }
 
     enum Action: Equatable {
