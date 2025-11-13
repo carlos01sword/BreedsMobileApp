@@ -10,9 +10,6 @@ nonisolated struct Breed: Equatable, Identifiable, Codable {
     let lifeSpan: String
     let referenceImageID: String?
 
-    var image: UIImage? = nil
-    var isLoadingImage: Bool = false
-
     enum CodingKeys: String, CodingKey { case id, name, origin, temperament, description, lifeSpan, referenceImageID }
 }
 
