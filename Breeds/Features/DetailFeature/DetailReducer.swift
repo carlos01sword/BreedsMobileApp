@@ -13,7 +13,7 @@ struct DetailReducer {
     }
         
     var body: some Reducer<State,Action>{
-        Scope(state: \.cell, action: \.cell){
+        Scope(state: \.cell, action: \.cell) {
             BreedCellReducer()
         }
     }
