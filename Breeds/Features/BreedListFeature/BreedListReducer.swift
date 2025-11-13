@@ -123,7 +123,7 @@ struct BreedListReducer {
 
     private func fetchBreeds(page: Int) -> Effect<Action> {
         .run { send in
-            await send (
+            await send(
                 .breedsResponse(
                     TaskResult { try await breedsClient.fetchBreeds(page, 10) }
                 )
