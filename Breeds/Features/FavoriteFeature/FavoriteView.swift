@@ -18,7 +18,10 @@ struct FavoriteView: View {
                             } label: {
                                 BreedRowView(
                                     store: Store(
-                                        initialState: BreedCellReducer.State(breed: breed),
+                                        initialState: BreedCellReducer.State(
+                                            breed: breed,
+                                            favoriteBreeds: store.$favoriteBreeds
+                                        ),
                                         reducer: { BreedCellReducer() }
                                     )
                                 )
@@ -48,7 +51,9 @@ struct FavoriteView: View {
 #if DEBUG
     #Preview {
         FavoriteView(
-            store: Store(initialState: FavoriteReducer.State()) {
+            store: Store(initialState: FavoriteReducer.State(
+                favoriteBreeds: Shared(value: IdentifiedArray(uniqueElements: [] as [Breed]))
+            )) {
                 FavoriteReducer()
             }
         )

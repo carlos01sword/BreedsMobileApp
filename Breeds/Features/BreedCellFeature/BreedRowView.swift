@@ -46,7 +46,10 @@ private extension CGFloat {
 #Preview("Interactive Favorite Toggle") {
     BreedRowView(
         store: Store(
-            initialState: BreedCellReducer.State(breed: MockData.sampleBreed),
+            initialState: BreedCellReducer.State(
+                breed: MockData.sampleBreed,
+                favoriteBreeds: Shared(value: IdentifiedArray(uniqueElements: [] as [Breed]))
+            ),
             reducer: { BreedCellReducer() }
         )
     )

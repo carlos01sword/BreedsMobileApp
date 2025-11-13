@@ -14,7 +14,7 @@ struct BreedCellReducer {
         @ObservationStateIgnored
         @Shared(.favoriteBreeds) var favoriteBreeds
 
-        init(breed: Breed, favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
+        init(breed: Breed, favoriteBreeds: Shared<IdentifiedArrayOf<Breed>>) {
             self._favoriteBreeds = favoriteBreeds
             self.breed = breed
         }

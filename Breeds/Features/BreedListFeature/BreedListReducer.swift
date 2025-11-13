@@ -67,7 +67,10 @@ struct BreedListReducer {
                 state.isLoading = false
                 state.canLoadMore = !breeds.isEmpty
 
-                let newItems = breeds.map {BreedCellReducer.State(breed: $0)}
+                let newItems = breeds.map { BreedCellReducer.State(
+                    breed: $0,
+                    favoriteBreeds: state.$favoriteBreeds)
+                }
 
                 if state.currentPage == 0 {
                     state.breeds = IdentifiedArray( uniqueElements: newItems )

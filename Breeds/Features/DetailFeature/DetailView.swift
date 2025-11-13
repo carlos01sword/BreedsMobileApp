@@ -42,7 +42,10 @@ struct DetailView: View {
     DetailView(
         store: StoreOf<DetailReducer>(
             initialState: DetailReducer.State(
-                cell: BreedCellReducer.State(breed: MockData.sampleBreed)
+                cell: BreedCellReducer.State(
+                    breed: MockData.sampleBreed,
+                    favoriteBreeds: Shared(value: IdentifiedArray(uniqueElements: [] as [Breed]))
+                )
             ),
             reducer: { DetailReducer() }
         )

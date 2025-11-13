@@ -19,7 +19,10 @@ struct FavoriteReducer {
         Reduce { state, action in
             switch action {
             case .breedTapped(let breed):
-                state.detail = DetailReducer.State(cell: BreedCellReducer.State(breed: breed))
+                state.detail = DetailReducer.State(
+                    cell: BreedCellReducer.State(
+                        breed: breed,
+                        favoriteBreeds: state.$favoriteBreeds))
                 return .none
 
             case .dismissDetail:

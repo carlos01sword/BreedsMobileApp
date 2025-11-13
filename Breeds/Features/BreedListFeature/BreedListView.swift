@@ -66,10 +66,12 @@ struct BreedListView: View {
 
 #if DEBUG
 #Preview {
-        BreedListView(
-            store: Store(initialState: BreedListReducer.State()) {
-                BreedListReducer()
-            }
-        )
-    }
+    BreedListView(
+        store: Store(initialState: BreedListReducer.State(
+            favoriteBreeds: Shared(value: IdentifiedArray(uniqueElements: [] as [Breed]))
+        )) {
+            BreedListReducer()
+        }
+    )
+}
 #endif
