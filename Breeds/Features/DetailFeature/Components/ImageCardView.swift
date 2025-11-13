@@ -1,13 +1,12 @@
 import SwiftUI
-
+import ComposableArchitecture
 struct ImageCardView: View {
-    let image: UIImage?
+    let id: String?
     let isLoading: Bool
-    let fetchImage: () -> Void
 
     var body: some View {
         Group {
-            if let image {
+            if let image = ImageCache.getCachedImage(for: id) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
@@ -20,20 +19,14 @@ struct ImageCardView: View {
                     .foregroundColor(.gray.opacity(0.6))
             }
         }
-        .onAppear {
-            if image == nil && !isLoading {
-                fetchImage()
-            }
-        }
     }
 }
 
 #if DEBUG
 #Preview {
     ImageCardView(
-        image: nil,
-        isLoading: false,
-        fetchImage: {}
+        id: MockData.sampleBreed.referenceImageID,
+        isLoading: false
     )
     .frame(width: 300, height: 300)
     .cardImageStyle()

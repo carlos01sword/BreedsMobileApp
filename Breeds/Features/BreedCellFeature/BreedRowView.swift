@@ -7,8 +7,7 @@ struct BreedRowView: View {
 
     var body: some View {
         HStack(spacing: .rowSpacing) {
-
-            ImageCardView(image: store.image, isLoading: store.isLoadingImage,fetchImage: { store.send(.fetchImage) } )
+            ImageCardView(id: store.breed.referenceImageID, isLoading: store.isLoadingImage)
                 .foregroundColor(.gray.opacity(ConstantsUI.darkerOpacity))
                 .scaledToFill()
                 .frame(width: .imageRowFrameSize , height: .imageRowFrameSize)

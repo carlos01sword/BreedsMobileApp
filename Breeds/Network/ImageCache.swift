@@ -12,7 +12,8 @@ enum ImageCache {
         return url
     }()
 
-    static func getCachedImage(for id: String) -> UIImage? {
+    static func getCachedImage(for id: String?) -> UIImage? {
+        guard let id = id else { return nil }
         let key = id as NSString
 
         if let cached = memoryCache.object(forKey: key) {
