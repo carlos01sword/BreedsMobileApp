@@ -53,7 +53,7 @@ struct BreedCellReducer {
                 }
 
                 state.isLoadingImage = true
-                return .run { [referenceID] send in
+                return .run { send in
                     await send(
                         .imageResponse(
                             TaskResult { try await imageClient.fetchImage(referenceID) }
