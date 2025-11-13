@@ -18,11 +18,6 @@ struct BreedCellReducer {
         init(breed: Breed, favoriteBreeds: Shared<IdentifiedArrayOf<Breed>> = Shared(.favoriteBreeds)) {
             self._favoriteBreeds = favoriteBreeds
             self.breed = breed
-
-            if let id = breed.referenceImageID,
-               let cachedImage = ImageCache.getCachedImage(for: id) {
-                    self.image = cachedImage
-                }
         }
     }
 

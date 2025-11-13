@@ -30,6 +30,9 @@ struct BreedRowView: View {
                 .fill(Color(.systemBackground))
                 .shadow()
         )
+        .onAppear{
+            store.send(.fetchImage)
+        }
     }
 }
 
