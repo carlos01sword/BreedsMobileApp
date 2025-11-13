@@ -125,7 +125,7 @@ struct BreedListReducer {
         .run { send in
             await send (
                 .breedsResponse(
-                    TaskResult { try await breedsClient.fetchBreeds(page,10) }
+                    TaskResult { try await breedsClient.fetchBreeds(page, 10) }
                 )
             )
         }
