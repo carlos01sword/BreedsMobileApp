@@ -73,7 +73,7 @@ struct BreedListReducer {
                 }
 
                 if state.currentPage == 0 {
-                    state.breeds = IdentifiedArray( uniqueElements: newItems )
+                    state.breeds = IdentifiedArray(uniqueElements: newItems)
                 } else {
                     state.breeds.append(contentsOf: newItems)
                 }
