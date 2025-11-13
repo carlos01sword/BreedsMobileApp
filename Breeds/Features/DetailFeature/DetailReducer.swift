@@ -16,11 +16,5 @@ struct DetailReducer {
         Scope(state: \.cell, action: \.cell){
             BreedCellReducer()
         }
-        Reduce {state,action in
-            switch action {
-            case .cell:
-                return .none
-            }
-        }
     }
 }
