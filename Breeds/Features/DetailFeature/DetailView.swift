@@ -29,7 +29,7 @@ struct DetailView: View {
                 .padding(.bottom, ConstantsUI.defaultPadding)
             }
             .toolbar(.hidden, for: .tabBar)
-            .onAppear{
+            .onAppear {
                 store.send(.cell(.fetchImage))
             }
         }
