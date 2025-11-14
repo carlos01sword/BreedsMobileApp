@@ -1,5 +1,5 @@
-import Foundation
 import ComposableArchitecture
+import SwiftUI
 
 nonisolated struct Breed: Equatable, Identifiable, Codable {
     let id: String
@@ -9,6 +9,8 @@ nonisolated struct Breed: Equatable, Identifiable, Codable {
     let description: String
     let lifeSpan: String
     let referenceImageID: String?
+
+    enum CodingKeys: String, CodingKey { case id, name, origin, temperament, description, lifeSpan, referenceImageID }
 }
 
 extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Breed>>.Default {
