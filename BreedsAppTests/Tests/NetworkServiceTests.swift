@@ -28,7 +28,7 @@ struct NetworkServiceTests{
             $0.currentPage = 1
 
             $0.breeds = IdentifiedArray(
-                uniqueElements: mockBreeds.map { BreedCellReducer.State(breed: $0) }
+                uniqueElements: mockBreeds.map { BreedCellReducer.State(breed: $0, favoriteBreeds: Shared(value: IdentifiedArray(uniqueElements: [] as [Breed]))) }
             )
         }
     }
