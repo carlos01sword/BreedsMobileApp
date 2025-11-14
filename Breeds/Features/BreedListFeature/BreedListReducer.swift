@@ -87,6 +87,7 @@ struct BreedListReducer {
 
                 if state.breeds.isEmpty {
                     state.errorMessage = errorDescription
+                    state.canLoadMore = false
                     return .none
                 }
 

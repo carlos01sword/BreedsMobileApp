@@ -31,4 +31,8 @@ enum MockData {
         state.breeds = IdentifiedArray(uniqueElements: cellStates)
         return state
     }
+
+    struct TestError: LocalizedError, Equatable {
+        var errorDescription: String? { "Network error" }
+    }
 }

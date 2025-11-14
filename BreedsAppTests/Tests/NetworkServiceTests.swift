@@ -22,14 +22,41 @@ struct NetworkServiceTests{
             $0.canLoadMore = true
         }
 
-        await store.receive(.breedsResponse(.success(mockBreeds))) {
-            $0.isLoading = false
-            $0.canLoadMore = true
-            $0.currentPage = 1
+        await store.receive(.breedsResponse(.success(mockBreeds))) { state in
+            state.isLoading = false
+            state.canLoadMore = true
+            state.currentPage = 1
 
-            $0.breeds = IdentifiedArray(
-                uniqueElements: mockBreeds.map { BreedCellReducer.State(breed: $0, favoriteBreeds: Shared(value: IdentifiedArray(uniqueElements: [] as [Breed]))) }
+            state.breeds = IdentifiedArray(
+                uniqueElements: mockBreeds.map { breed in
+                    BreedCellReducer.State(
+                        breed: breed,
+                        favoriteBreeds: state.$favoriteBreeds
+                    )
+                }
             )
+        }
+    }
+
+    @Test func fetchBreedsFailure() async {
+        let error = MockData.TestError()
+
+        let store = TestStore(initialState: BreedListReducer.State()) {
+            BreedListReducer()
+        }
+        store.dependencies.breedsClient.fetchBreeds = { _, _ in throw error }
+
+        await store.send(.fetchBreeds) {
+            $0.isLoading = true
+            $0.errorMessage = nil
+            $0.currentPage = 0
+            $0.canLoadMore = true
+        }
+
+        await store.receive(.breedsResponse(.failure(error))) {
+            $0.isLoading = false
+            $0.errorMessage = error.errorDescription
+            $0.canLoadMore = false
         }
     }
 }

@@ -10,10 +10,8 @@ struct BreedListView: View {
                 if store.breeds.isEmpty && store.isLoading {
                     ProgressView("Loading breeds...")
                         .progressViewStyle(CircularProgressViewStyle())
-                } else if store.breeds.isEmpty, let errorMessage = store.errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .padding()
+                } else if store.breeds.isEmpty{
+                    BreedsEmptyView()
                 } else {
                     ScrollView {
                         LazyVStack {
