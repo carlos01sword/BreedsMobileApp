@@ -44,6 +44,14 @@ extension ImageClient: DependencyKey {
     }
 }
 
+extension ImageClient: TestDependencyKey {
+    static let testValue = Self (
+        fetchImage: { _ in
+            UIImage()
+        }
+    )
+}
+
 extension DependencyValues {
     var imageClient: ImageClient {
         get { self[ImageClient.self] }

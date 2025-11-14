@@ -1,6 +1,7 @@
 import Testing
 import ComposableArchitecture
 @testable import Breeds
+import SwiftUI
 
 @Suite("Breed Cell Feature - Favorites")
 @MainActor
@@ -40,6 +41,32 @@ struct BreedCellReducerTests {
             $0.$favoriteBreeds.withLock { favorites in
                 _ = favorites.remove(id: breed.id)
             }
+        }
+    }
+
+    @Test
+    func fetchImageSuccess() async {
+        let breed = MockData.breed1
+        let mockImage = UIImage(systemName: "photo")!
+        let sharedFavorites = Shared(value: IdentifiedArrayOf<Breed>())
+        let store = TestStore(
+            initialState: BreedCellReducer.State(
+                breed: breed,
+                favoriteBreeds: sharedFavorites
+            ),
+            reducer: { BreedCellReducer() }
+        )
+
+        store.dependencies.imageClient.fetchImage = { id in
+            return mockImage
+        }
+
+        await store.send(.fetchImage) {
+            $0.isLoadingImage = true
+        }
+
+        await store.receive(.imageResponse(.success(mockImage))) {
+            $0.isLoadingImage = false
         }
     }
 }
